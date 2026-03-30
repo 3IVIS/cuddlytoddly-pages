@@ -2,47 +2,167 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>cuddlytoddly</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>cuddlytoddly — LLM Planning, Handled</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <div class="grain"></div>
+
+  <!-- HERO -->
   <header>
-    <h1>cuddlytoddly</h1>
-    <p>Holding LLMs’ hands through complex planning</p>
     <nav>
-      <a href="#about">About</a>
-      <a href="#features">Features</a>
-      <a href="#quickstart">Quick Start</a>
-      <a href="https://github.com/3IVIS/cuddlytoddly">GitHub</a>
+      <span class="nav-logo">cuddlytoddly</span>
+      <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#quickstart">Quick Start</a>
+        <a href="https://github.com/3IVIS/cuddlytoddly" class="nav-github" target="_blank">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
     </nav>
+
+    <div class="hero">
+      <div class="hero-eyebrow">v0.1 · Open Source</div>
+      <h1>
+        Holding LLMs' hands<br>
+        <em>through complex planning</em>
+      </h1>
+      <p class="hero-sub">cuddlytoddly is an autonomous planning and execution system — giving language models the scaffolding they need to tackle multi-step tasks reliably.</p>
+      <div class="hero-actions">
+        <a href="#quickstart" class="btn-primary">Get Started</a>
+        <a href="#about" class="btn-ghost">Learn More</a>
+      </div>
+    </div>
+
+    <div class="hero-code-strip">
+      <span class="prompt">$</span>
+      <span class="cmd">cuddlytoddly</span>
+      <span class="arg">"Write a market analysis for electric scooters"</span>
+    </div>
   </header>
 
+  <!-- ABOUT -->
   <section id="about">
-    <h2>About</h2>
-    <p>cuddlytoddly is an LLM-driven autonomous planning and execution system built around a DAG of tasks...</p>
-    <img src="assets/diagram.png" alt="Architecture diagram">
+    <div class="section-inner">
+      <div class="section-label">About</div>
+      <h2>A DAG of tasks,<br>not a chain of prompts</h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>Most LLM orchestration frameworks treat planning as an afterthought — a linear chain of tool calls hoping nothing breaks. <strong>cuddlytoddly</strong> takes a different approach.</p>
+          <p>Tasks are decomposed into a directed acyclic graph. Dependencies are explicit. Progress is checkpointed. When something goes wrong, you resume from exactly where you left off.</p>
+          <p>It's not babysitting your model — it's giving it the structure it was missing.</p>
+        </div>
+        <div class="about-diagram">
+          <img src="assets/diagram.png" alt="cuddlytoddly architecture diagram" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+          <div class="diagram-placeholder" style="display:none">
+            <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" width="320">
+              <defs>
+                <marker id="arr" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto">
+                  <polygon points="0 0, 8 3, 0 6" fill="#c9a96e" opacity="0.7"/>
+                </marker>
+              </defs>
+              <!-- Nodes -->
+              <rect x="120" y="10" width="80" height="32" rx="6" fill="#c9a96e" opacity="0.15" stroke="#c9a96e" stroke-width="1.5"/>
+              <text x="160" y="30" text-anchor="middle" fill="#c9a96e" font-size="11" font-family="DM Mono">Task A</text>
+
+              <rect x="40" y="80" width="80" height="32" rx="6" fill="#c9a96e" opacity="0.1" stroke="#c9a96e" stroke-width="1"/>
+              <text x="80" y="100" text-anchor="middle" fill="#c9a96e" font-size="11" font-family="DM Mono">Task B</text>
+
+              <rect x="200" y="80" width="80" height="32" rx="6" fill="#c9a96e" opacity="0.1" stroke="#c9a96e" stroke-width="1"/>
+              <text x="240" y="100" text-anchor="middle" fill="#c9a96e" font-size="11" font-family="DM Mono">Task C</text>
+
+              <rect x="120" y="150" width="80" height="32" rx="6" fill="#7fb3c8" opacity="0.15" stroke="#7fb3c8" stroke-width="1.5"/>
+              <text x="160" y="170" text-anchor="middle" fill="#7fb3c8" font-size="11" font-family="DM Mono">Task D</text>
+
+              <!-- Arrows -->
+              <line x1="130" y1="42" x2="95" y2="78" stroke="#c9a96e" stroke-width="1.2" opacity="0.5" marker-end="url(#arr)"/>
+              <line x1="190" y1="42" x2="225" y2="78" stroke="#c9a96e" stroke-width="1.2" opacity="0.5" marker-end="url(#arr)"/>
+              <line x1="105" y1="112" x2="145" y2="148" stroke="#c9a96e" stroke-width="1.2" opacity="0.5" marker-end="url(#arr)"/>
+              <line x1="215" y1="112" x2="175" y2="148" stroke="#c9a96e" stroke-width="1.2" opacity="0.5" marker-end="url(#arr)"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
+  <!-- FEATURES -->
   <section id="features">
-    <h2>Features</h2>
-    <ul>
-      <li>Task Graph Decomposition</li>
-      <li>Human-Guided Reliability</li>
-      <li>Multi-Backend Support</li>
-      <li>Crash & Resume</li>
-      <li>Extensible Skills</li>
-    </ul>
+    <div class="section-inner">
+      <div class="section-label">Features</div>
+      <h2>Everything the toddler<br>needs to walk steady</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⬡</div>
+          <h3>Task Graph Decomposition</h3>
+          <p>Complex goals are broken into a DAG. Each node is a discrete, executable unit with declared dependencies.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">✦</div>
+          <h3>Human-Guided Reliability</h3>
+          <p>Configurable checkpoints where humans review or intervene. Trust but verify — at whatever granularity you need.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">◈</div>
+          <h3>Multi-Backend Support</h3>
+          <p>Plug in Anthropic, OpenAI, or any compatible API. The planning layer is model-agnostic by design.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">↺</div>
+          <h3>Crash &amp; Resume</h3>
+          <p>State is persisted after every node. Failures restart only the affected branch — not the whole plan.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">◻</div>
+          <h3>Extensible Skills</h3>
+          <p>Add custom tool definitions and execution backends. Build the skill library your domain actually needs.</p>
+        </div>
+      </div>
+    </div>
   </section>
 
+  <!-- QUICK START -->
   <section id="quickstart">
-    <h2>Quick Start</h2>
-    <pre><code>pip install cuddlytoddly
-export ANTHROPIC_API_KEY=sk-ant-...
-cuddlytoddly "Write a market analysis for electric scooters"</code></pre>
+    <div class="section-inner">
+      <div class="section-label">Quick Start</div>
+      <h2>Up and running<br>in three lines</h2>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-dots"><span></span><span></span><span></span></span>
+          <span class="code-title">terminal</span>
+        </div>
+        <pre><code><span class="c-muted"># Install</span>
+<span class="c-cmd">pip install</span> cuddlytoddly
+
+<span class="c-muted"># Set your key</span>
+<span class="c-cmd">export</span> ANTHROPIC_API_KEY=<span class="c-str">sk-ant-...</span>
+
+<span class="c-muted"># Run a task</span>
+cuddlytoddly <span class="c-str">"Write a market analysis for electric scooters"</span></code></pre>
+      </div>
+      <p class="qs-note">Requires Python 3.10+. Works with any Anthropic-compatible API key.</p>
+    </div>
   </section>
 
+  <!-- FOOTER -->
   <footer>
-    <p>MIT License · Maintained by 3IVIS</p>
+    <div class="footer-inner">
+      <div class="footer-logo">cuddlytoddly</div>
+      <div class="footer-links">
+        <a href="https://github.com/3IVIS/cuddlytoddly" target="_blank">GitHub</a>
+        <a href="https://github.com/3IVIS/cuddlytoddly/blob/main/LICENSE" target="_blank">MIT License</a>
+        <a href="https://github.com/3IVIS/cuddlytoddly/issues" target="_blank">Issues</a>
+      </div>
+      <div class="footer-copy">Maintained by <a href="https://github.com/3IVIS" target="_blank">3IVIS</a></div>
+    </div>
   </footer>
+
 </body>
 </html>
