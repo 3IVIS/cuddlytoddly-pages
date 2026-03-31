@@ -94,14 +94,40 @@ nav {
 header { border-bottom: 1px solid var(--border); }
 .hero {
   max-width: var(--max); margin: 0 auto;
-  padding: 6rem 2rem 4rem; position: relative;
+  padding: 5rem 2rem 4rem; position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: center;
 }
 .hero::after {
   content: ''; position: absolute;
-  top: 0; left: 50%; transform: translateX(-50%);
-  width: 700px; height: 320px;
-  background: radial-gradient(ellipse at 50% 0%, rgba(201,169,110,.07) 0%, transparent 70%);
-  pointer-events: none;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(201,169,110,.07) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+}
+.hero-text { position: relative; z-index: 1; }
+.hero-mascot {
+  position: relative; z-index: 1;
+  width: 240px; flex-shrink: 0;
+  animation: up .65s .1s ease both;
+}
+.hero-mascot img {
+  width: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--bwarm);
+  box-shadow:
+    0 0 0 8px rgba(201,169,110,.04),
+    0 0 60px rgba(201,169,110,.1),
+    0 24px 48px rgba(0,0,0,.5);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.hero-mascot img:hover {
+  transform: scale(1.03) translateY(-3px);
+  box-shadow:
+    0 0 0 10px rgba(201,169,110,.06),
+    0 0 80px rgba(201,169,110,.15),
+    0 32px 60px rgba(0,0,0,.55);
 }
 .eyebrow {
   font-family: var(--mono); font-size: .72rem;
@@ -109,14 +135,14 @@ header { border-bottom: 1px solid var(--border); }
   text-transform: uppercase; margin-bottom: 1.2rem;
   opacity: .75; animation: up .55s ease both;
 }
-.hero h1 {
+.hero-text h1 {
   font-size: clamp(2.2rem, 5vw, 3.4rem);
   color: var(--text); margin-bottom: 1.4rem;
   animation: up .55s .08s ease both;
 }
 .hero-sub {
   font-size: 1rem; color: var(--muted);
-  max-width: 530px; margin-bottom: 2.25rem; line-height: 1.75;
+  max-width: 490px; margin-bottom: 2.25rem; line-height: 1.75;
   animation: up .55s .16s ease both;
 }
 .hero-actions {
@@ -315,7 +341,17 @@ footer { padding: 2.25rem 2rem; }
   .nav-links a:not(.nav-gh) { display: none; }
   nav { padding: 1rem 1.25rem; }
   .inner { padding: 3.5rem 1.25rem; }
-  .hero { padding: 4rem 1.25rem 3rem; }
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 3.5rem 1.25rem 2.5rem;
+    text-align: center;
+  }
+  .hero-mascot {
+    width: 180px;
+    margin: 0 auto;
+    order: -1;
+  }
+  .hero-sub { margin-left: auto; margin-right: auto; }
   .brow { grid-template-columns: 1fr 1.5fr; }
   .be { display: none; }
   .footer-inner { flex-direction: column; align-items: flex-start; }
@@ -341,12 +377,17 @@ footer { padding: 2.25rem 2rem; }
   <!-- HERO -->
   <header>
     <div class="hero">
-      <div class="eyebrow">Open Source · MIT License · Python 3.11+</div>
-      <h1>Holding LLMs' hands<br><em>through complex planning</em></h1>
-      <p class="hero-sub">cuddlytoddly gives language models the scaffolding they need: a structured DAG of tasks, explicit dependencies, human-guided checkpoints, and crash-proof state — so they can tackle long-horizon goals without wandering off track.</p>
-      <div class="hero-actions">
-        <a href="#quickstart" class="btn btn-solid">Get Started</a>
-        <a href="#how" class="btn btn-outline">How it works</a>
+      <div class="hero-text">
+        <div class="eyebrow">Open Source · MIT License · Python 3.11+</div>
+        <h1>Holding LLMs' hands<br><em>through complex planning</em></h1>
+        <p class="hero-sub">cuddlytoddly gives language models the scaffolding they need: a structured DAG of tasks, explicit dependencies, human-guided checkpoints, and crash-proof state — so they can tackle long-horizon goals without wandering off track.</p>
+        <div class="hero-actions">
+          <a href="#quickstart" class="btn btn-solid">Get Started</a>
+          <a href="#how" class="btn btn-outline">How it works</a>
+        </div>
+      </div>
+      <div class="hero-mascot">
+        <img src="assets/logo.png" alt="cuddlytoddly mascot — a small robot being guided by a human hand">
       </div>
     </div>
     <div class="hero-strip">
