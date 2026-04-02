@@ -463,7 +463,7 @@ footer { padding: 2.25rem 2rem; }
                                                                     │
                                                           <span class="cb2">TaskGraph  ← inspect &amp; edit anytime</span>
                                                                     │
-                                                        <span class="co">SimpleOrchestrator</span>
+                                                        <span class="co">Orchestrator</span>
                                                         ├── <span class="cb2">LLMExecutor</span> + tools + skills
                                                         └── <span class="cg">QualityGate</span>  (verify / bridge)
                                                                     │
@@ -643,7 +643,7 @@ footer { padding: 2.25rem 2rem; }
 <span class="ck">from</span> cuddlytoddly.planning.llm_planner    <span class="ck">import</span> LLMPlanner
 <span class="ck">from</span> cuddlytoddly.planning.llm_executor   <span class="ck">import</span> LLMExecutor
 <span class="ck">from</span> cuddlytoddly.engine.quality_gate     <span class="ck">import</span> QualityGate
-<span class="ck">from</span> cuddlytoddly.engine.llm_orchestrator <span class="ck">import</span> SimpleOrchestrator
+<span class="ck">from</span> cuddlytoddly.engine.llm_orchestrator <span class="ck">import</span> Orchestrator
 <span class="ck">from</span> cuddlytoddly.core.task_graph         <span class="ck">import</span> TaskGraph
 <span class="ck">from</span> cuddlytoddly.skills.skill_loader     <span class="ck">import</span> SkillLoader
 
@@ -652,7 +652,7 @@ footer { padding: 2.25rem 2rem; }
 <span class="cx">graph</span>  = TaskGraph()
 <span class="cx">skills</span> = SkillLoader()
 
-<span class="cx">orchestrator</span> = SimpleOrchestrator(
+<span class="cx">orchestrator</span> = Orchestrator(
     graph=<span class="cx">graph</span>,
     planner=LLMPlanner(
         llm_client=<span class="cx">llm</span>, graph=<span class="cx">graph</span>,
