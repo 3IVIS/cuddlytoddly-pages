@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>cuddlytoddly — LLM Planning, Handled</title>
+  <title>cuddlytoddly — Holding AI's hand through planning and into execution</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
@@ -43,7 +43,6 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
-/* subtle grain */
 body::before {
   content: '';
   pointer-events: none;
@@ -58,11 +57,7 @@ h1,h2,h3,h4 { font-family: var(--serif); font-weight: 600; line-height: 1.2; }
 em { font-style: italic; color: var(--amber); }
 strong { color: var(--text); font-weight: 500; }
 p { color: var(--muted); }
-code {
-  font-family: var(--mono);
-  font-size: .85em;
-  color: var(--amber);
-}
+code { font-family: var(--mono); font-size: .85em; color: var(--amber); }
 
 /* ── NAV ── */
 nav {
@@ -74,10 +69,7 @@ nav {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
-.nav-logo {
-  font-family: var(--mono); font-size: .85rem;
-  color: var(--amber); letter-spacing: .06em; font-weight: 500;
-}
+.nav-logo { font-family: var(--mono); font-size: .85rem; color: var(--amber); letter-spacing: .06em; font-weight: 500; }
 .nav-links { display: flex; gap: 1.5rem; align-items: center; }
 .nav-links a { color: var(--muted); font-size: .84rem; transition: color .18s; }
 .nav-links a:hover { color: var(--text); opacity: 1; }
@@ -95,14 +87,11 @@ header { border-bottom: 1px solid var(--border); }
 .hero {
   max-width: var(--max); margin: 0 auto;
   padding: 5rem 2rem 4rem; position: relative;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 2rem;
-  align-items: center;
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 2rem; align-items: center;
 }
 .hero::after {
-  content: ''; position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   background: radial-gradient(ellipse at 30% 50%, rgba(201,169,110,.07) 0%, transparent 65%);
   pointer-events: none; z-index: 0;
 }
@@ -113,26 +102,18 @@ header { border-bottom: 1px solid var(--border); }
   animation: up .65s .1s ease both;
 }
 .hero-mascot img {
-  width: 100%;
-  border-radius: 50%;
+  width: 100%; border-radius: 50%;
   border: 2px solid var(--bwarm);
-  box-shadow:
-    0 0 0 8px rgba(201,169,110,.04),
-    0 0 60px rgba(201,169,110,.1),
-    0 24px 48px rgba(0,0,0,.5);
+  box-shadow: 0 0 0 8px rgba(201,169,110,.04), 0 0 60px rgba(201,169,110,.1), 0 24px 48px rgba(0,0,0,.5);
   transition: transform .3s ease, box-shadow .3s ease;
 }
 .hero-mascot img:hover {
   transform: scale(1.03) translateY(-3px);
-  box-shadow:
-    0 0 0 10px rgba(201,169,110,.06),
-    0 0 80px rgba(201,169,110,.15),
-    0 32px 60px rgba(0,0,0,.55);
+  box-shadow: 0 0 0 10px rgba(201,169,110,.06), 0 0 80px rgba(201,169,110,.15), 0 32px 60px rgba(0,0,0,.55);
 }
 .eyebrow {
-  font-family: var(--mono); font-size: .72rem;
-  color: var(--amber); letter-spacing: .14em;
-  text-transform: uppercase; margin-bottom: 1.2rem;
+  font-family: var(--mono); font-size: .72rem; color: var(--amber);
+  letter-spacing: .14em; text-transform: uppercase; margin-bottom: 1.2rem;
   opacity: .75; animation: up .55s ease both;
 }
 .hero-text h1 {
@@ -142,9 +123,21 @@ header { border-bottom: 1px solid var(--border); }
 }
 .hero-sub {
   font-size: 1rem; color: var(--muted);
-  max-width: 490px; margin-bottom: 2.25rem; line-height: 1.75;
+  max-width: 490px; margin-bottom: 1.75rem; line-height: 1.75;
   animation: up .55s .16s ease both;
 }
+.hero-props {
+  display: flex; flex-wrap: wrap; gap: .5rem;
+  margin-bottom: 2rem;
+  animation: up .55s .2s ease both;
+}
+.hero-prop {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .78rem; font-family: var(--mono);
+  color: var(--muted); border: 1px solid var(--border);
+  border-radius: 20px; padding: .28rem .8rem;
+}
+.hero-prop-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
 .hero-actions {
   display: flex; gap: .875rem; flex-wrap: wrap;
   animation: up .55s .24s ease both;
@@ -167,9 +160,7 @@ header { border-bottom: 1px solid var(--border); }
   display: flex; gap: .5em; align-items: baseline; flex-wrap: wrap;
   animation: up .55s .32s ease both;
 }
-.sp { color: var(--dim); }
-.sc { color: var(--amber); }
-.ss { color: var(--blue); opacity: .85; }
+.sp { color: var(--dim); } .sc { color: var(--amber); } .ss { color: var(--blue); opacity: .85; }
 
 /* ── SECTIONS ── */
 section { border-bottom: 1px solid var(--border); }
@@ -180,10 +171,7 @@ section:nth-child(odd) { background: var(--bg-alt); }
   text-transform: uppercase; letter-spacing: .16em;
   color: var(--amber); margin-bottom: .9rem; opacity: .6;
 }
-.inner > h2 {
-  font-size: clamp(1.7rem, 3.5vw, 2.45rem);
-  color: var(--text); margin-bottom: 2rem;
-}
+.inner > h2 { font-size: clamp(1.7rem, 3.5vw, 2.45rem); color: var(--text); margin-bottom: 2rem; }
 .inner > p { font-size: .95rem; margin-bottom: 1rem; }
 .inner > p:last-child { margin-bottom: 0; }
 
@@ -195,36 +183,37 @@ section:nth-child(odd) { background: var(--bg-alt); }
   border-bottom: 1px solid var(--border);
 }
 .step:last-child { border-bottom: none; }
-.snum {
-  font-family: var(--mono); font-size: .7rem;
-  color: var(--amber); opacity: .5;
-  padding-top: .2rem; letter-spacing: .04em;
-}
-.sbody h4 {
-  font-family: var(--serif); font-size: .98rem;
-  color: var(--text); margin-bottom: .3rem; font-weight: 600;
-}
+.snum { font-family: var(--mono); font-size: .7rem; color: var(--amber); opacity: .5; padding-top: .2rem; letter-spacing: .04em; }
+.sbody h4 { font-family: var(--serif); font-size: .98rem; color: var(--text); margin-bottom: .3rem; font-weight: 600; }
 .sbody p { font-size: .875rem; margin: 0; }
+.step-tag {
+  display: inline-block; font-family: var(--mono); font-size: .6rem;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: .1rem .45rem; border-radius: 3px; margin-bottom: .35rem;
+}
+.step-tag-plan { background: rgba(201,169,110,.12); color: var(--amber); }
+.step-tag-exec { background: rgba(130,180,200,.10); color: var(--blue); }
+.step-tag-ctrl { background: rgba(125,186,140,.10); color: var(--green); }
 
-/* ── PIPELINE CALLOUT ── */
-.pipeline-note {
-  display: flex; align-items: flex-start; gap: .75rem;
-  background: var(--amber-dim); border: 1px solid var(--bwarm);
-  border-radius: var(--r); padding: 1rem 1.25rem;
-  margin-top: 1.5rem;
+/* ── CONTROL CALLOUT ── */
+.control-callout {
+  margin-top: 1.75rem;
+  border: 1px solid var(--bwarm);
+  border-radius: var(--r);
+  overflow: hidden;
 }
-.pipeline-note-icon { font-size: .95rem; flex-shrink: 0; padding-top: .1rem; }
-.pipeline-note p {
-  font-size: .82rem; color: var(--muted); margin: 0; line-height: 1.6;
+.cc-hdr {
+  background: var(--amber-dim);
+  padding: .7rem 1.25rem;
+  font-family: var(--mono); font-size: .7rem;
+  color: var(--amber); letter-spacing: .1em; text-transform: uppercase;
 }
-.pipeline-note p strong { color: var(--amber); }
+.cc-body { padding: 1.1rem 1.25rem; display: flex; flex-direction: column; gap: .6rem; }
+.cc-row { display: flex; align-items: flex-start; gap: .75rem; font-size: .84rem; color: var(--muted); line-height: 1.55; }
+.cc-icon { color: var(--amber); flex-shrink: 0; width: 1rem; text-align: center; }
 
 /* ── CODE BLOCKS ── */
-.cb {
-  background: var(--bg-code);
-  border: 1px solid var(--border);
-  border-radius: var(--r); overflow: hidden;
-}
+.cb { background: var(--bg-code); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
 .cb-hdr {
   display: flex; align-items: center; gap: .65rem;
   padding: .6rem 1rem; border-bottom: 1px solid var(--border);
@@ -235,24 +224,12 @@ section:nth-child(odd) { background: var(--bg-alt); }
 .dots span:nth-child(1) { background: #ed6a5a55; }
 .dots span:nth-child(2) { background: #f4bf4e55; }
 .dots span:nth-child(3) { background: #61c55455; }
-.cb-title {
-  font-family: var(--mono); font-size: .7rem;
-  color: var(--dim); letter-spacing: .05em;
-}
+.cb-title { font-family: var(--mono); font-size: .7rem; color: var(--dim); letter-spacing: .05em; }
 .cb pre { padding: 1.2rem 1.4rem; overflow-x: auto; }
-.cb code {
-  font-family: var(--mono); font-size: .8rem;
-  line-height: 1.9; color: var(--text);
-}
-/* syntax colours */
-.co { color: var(--amber); }
-.cb2 { color: var(--blue); }
-.cg { color: var(--green); }
-.cd2 { color: var(--dim); }
-.ck { color: var(--blue); }
-.cs { color: var(--amber); }
-.cx { color: var(--green); }
-.cm { color: var(--dim); }
+.cb code { font-family: var(--mono); font-size: .8rem; line-height: 1.9; color: var(--text); }
+.co { color: var(--amber); } .cb2 { color: var(--blue); } .cg { color: var(--green); }
+.cd2 { color: var(--dim); } .ck { color: var(--blue); } .cs { color: var(--amber); }
+.cx { color: var(--green); } .cm { color: var(--dim); }
 
 /* ── FEATURES ── */
 .feat-grid {
@@ -266,27 +243,19 @@ section:nth-child(odd) { background: var(--bg-alt); }
   transition: border-color .2s, transform .18s;
 }
 .feat-card:hover { border-color: var(--bwarm); transform: translateY(-2px); }
-.feat-card.feat-new { border-color: rgba(201,169,110,0.18); }
+.feat-card.feat-new { border-color: rgba(201,169,110,.18); }
 .feat-icon { font-size: 1.1rem; color: var(--amber); margin-bottom: .75rem; opacity: .85; }
-.feat-card h3 {
-  font-family: var(--serif); font-size: 1rem;
-  color: var(--text); margin-bottom: .45rem; font-weight: 600;
-}
+.feat-card h3 { font-family: var(--serif); font-size: 1rem; color: var(--text); margin-bottom: .45rem; font-weight: 600; }
 .feat-card p { font-size: .85rem; line-height: 1.65; margin: 0; }
 .feat-badge {
-  display: inline-block;
-  font-family: var(--mono); font-size: .62rem;
+  display: inline-block; font-family: var(--mono); font-size: .62rem;
   color: var(--amber); border: 1px solid var(--bwarm);
   border-radius: 4px; padding: .1rem .4rem;
-  letter-spacing: .06em; text-transform: uppercase;
-  margin-bottom: .55rem;
+  letter-spacing: .06em; text-transform: uppercase; margin-bottom: .55rem;
 }
 
 /* ── BACKENDS TABLE ── */
-.btable {
-  border: 1px solid var(--border); border-radius: var(--r);
-  overflow: hidden;
-}
+.btable { border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
 .brow {
   display: grid; grid-template-columns: 1.1fr 1.9fr 1.2fr;
   padding: .8rem 1.25rem; gap: 1rem; align-items: center;
@@ -295,11 +264,7 @@ section:nth-child(odd) { background: var(--bg-alt); }
 }
 .brow:last-child { border-bottom: none; }
 .brow:not(.bhdr):hover { background: var(--amber-dim); }
-.bhdr {
-  background: rgba(255,255,255,.025);
-  font-family: var(--mono); font-size: .68rem;
-  color: var(--dim); letter-spacing: .09em; text-transform: uppercase;
-}
+.bhdr { background: rgba(255,255,255,.025); font-family: var(--mono); font-size: .68rem; color: var(--dim); letter-spacing: .09em; text-transform: uppercase; }
 .bn { font-family: var(--mono); color: var(--amber); font-size: .82rem; }
 .bc { font-family: var(--mono); color: var(--blue); font-size: .79rem; }
 .be { font-family: var(--mono); color: var(--muted); font-size: .79rem; }
@@ -309,26 +274,14 @@ section:nth-child(odd) { background: var(--bg-alt); }
   border-radius: var(--r); font-size: .8rem; color: var(--dim);
   font-family: var(--mono); line-height: 1.6;
 }
-.backend-note strong { color: var(--muted); font-weight: 400; }
 
-/* ── QUICK START STEPS ── */
+/* ── QUICK START ── */
 .qs-steps { display: flex; flex-direction: column; gap: 1.25rem; }
-.qs-label {
-  font-family: var(--mono); font-size: .7rem;
-  color: var(--muted); letter-spacing: .08em;
-  text-transform: uppercase; margin-bottom: .5rem;
-}
-.qs-note {
-  font-size: .79rem; color: var(--dim);
-  margin-top: 1rem; font-family: var(--mono);
-}
+.qs-label { font-family: var(--mono); font-size: .7rem; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-bottom: .5rem; }
+.qs-note { font-size: .79rem; color: var(--dim); margin-top: 1rem; font-family: var(--mono); }
 
-/* ── DOCS LINKS ── */
-.doc-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: .875rem;
-}
+/* ── DOCS ── */
+.doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: .875rem; }
 .doc-card {
   background: var(--bg-card); border: 1px solid var(--border);
   border-radius: var(--r); padding: 1.1rem 1.25rem;
@@ -336,10 +289,7 @@ section:nth-child(odd) { background: var(--bg-alt); }
   transition: border-color .18s, transform .15s;
 }
 .doc-card:hover { border-color: var(--bwarm); transform: translateY(-1px); opacity: 1; }
-.doc-title {
-  font-family: var(--serif); font-size: .95rem;
-  color: var(--text); font-weight: 600;
-}
+.doc-title { font-family: var(--serif); font-size: .95rem; color: var(--text); font-weight: 600; }
 .doc-desc { font-size: .8rem; color: var(--muted); line-height: 1.5; }
 
 /* ── FOOTER ── */
@@ -349,10 +299,7 @@ footer { padding: 2.25rem 2rem; }
   display: flex; align-items: center; justify-content: space-between;
   flex-wrap: wrap; gap: 1rem;
 }
-.footer-logo {
-  font-family: var(--mono); font-size: .82rem;
-  color: var(--amber); letter-spacing: .06em; opacity: .55;
-}
+.footer-logo { font-family: var(--mono); font-size: .82rem; color: var(--amber); letter-spacing: .06em; opacity: .55; }
 .flinks { display: flex; gap: 1.5rem; }
 .flinks a { font-size: .8rem; color: var(--dim); transition: color .18s; }
 .flinks a:hover { color: var(--text); opacity: 1; }
@@ -370,17 +317,10 @@ footer { padding: 2.25rem 2rem; }
   .nav-links a:not(.nav-gh) { display: none; }
   nav { padding: 1rem 1.25rem; }
   .inner { padding: 3.5rem 1.25rem; }
-  .hero {
-    grid-template-columns: 1fr;
-    padding: 3.5rem 1.25rem 2.5rem;
-    text-align: center;
-  }
-  .hero-mascot {
-    width: 180px;
-    margin: 0 auto;
-    order: -1;
-  }
+  .hero { grid-template-columns: 1fr; padding: 3.5rem 1.25rem 2.5rem; text-align: center; }
+  .hero-mascot { width: 180px; margin: 0 auto; order: -1; }
   .hero-sub { margin-left: auto; margin-right: auto; }
+  .hero-props { justify-content: center; }
   .brow { grid-template-columns: 1fr 1.5fr; }
   .be { display: none; }
   .footer-inner { flex-direction: column; align-items: flex-start; }
@@ -408,8 +348,13 @@ footer { padding: 2.25rem 2rem; }
     <div class="hero">
       <div class="hero-text">
         <div class="eyebrow">Open Source · MIT License · Python 3.11+</div>
-        <h1>Holding LLMs' hand<br><em>through complex planning</em></h1>
-        <p class="hero-sub">cuddlytoddly gives language models the scaffolding they need: a structured DAG of tasks, a multi-stage planning pipeline with built-in self-review, explicit dependency enforcement, and crash-proof state — so they can tackle long-horizon goals without wandering off track.</p>
+        <h1>Holding AI's hand<br>through planning <em>and into execution</em></h1>
+        <p class="hero-sub">cuddlytoddly builds an explicit task plan before touching anything — a visible, editable graph of steps and dependencies. Inspect it, change it, or redirect it at any point. When you're ready, it carries the plan out with real tools, quality-checks the results, and keeps going until the job is done.</p>
+        <div class="hero-props">
+          <span class="hero-prop"><span class="hero-prop-dot"></span>Explicit plan before every action</span>
+          <span class="hero-prop"><span class="hero-prop-dot"></span>Pause, edit, or redirect anytime</span>
+          <span class="hero-prop"><span class="hero-prop-dot"></span>Executes with real tools &amp; skills</span>
+        </div>
         <div class="hero-actions">
           <a href="#quickstart" class="btn btn-solid">Get Started</a>
           <a href="#how" class="btn btn-outline">How it works</a>
@@ -436,80 +381,93 @@ footer { padding: 2.25rem 2rem; }
   <section id="how">
     <div class="inner">
       <div class="sec-label">How it works</div>
-      <h2>A DAG of tasks,<br>not a chain of prompts</h2>
-      <p>Most LLM frameworks treat planning as a linear chain of tool calls — and hope nothing breaks. cuddlytoddly decomposes every goal into a directed acyclic graph where dependencies are explicit, execution is checkpointed, and failures restart only the affected branch. Any task can be drilled into further at any time.</p>
+      <h2>Plan first, execute second —<br>with you in control throughout</h2>
+      <p>Most LLM agents jump straight into action and hope for the best. cuddlytoddly builds a complete task graph before executing anything, so you always know what it intends to do — and can change that intent before, during, or after execution.</p>
 
       <div class="steps" style="margin-top:2rem">
         <div class="step">
           <span class="snum">01</span>
           <div class="sbody">
+            <div class="step-tag step-tag-plan">Plan</div>
             <h4>Goal seeding</h4>
-            <p>A plain-English goal is seeded into the task graph as the root node.</p>
+            <p>A plain-English goal is seeded into the task graph as the root node. Nothing runs yet.</p>
           </div>
         </div>
         <div class="step">
           <span class="snum">02</span>
           <div class="sbody">
-            <h4>LLMPlanner decomposes — through a three-stage pipeline</h4>
-            <p>The planner breaks the goal into a DAG of tasks. The raw plan then passes through an optional <em>scrutiny pass</em> (the LLM reviews its own draft for goal coverage, task realism, and missing steps), <em>structural validation</em> (dependency rules, duplicate nodes, metadata checks), and a <em>constraint checker</em> (cycle detection, ghost node resolution, orphaned input cleanup) before any node reaches the graph.</p>
+            <div class="step-tag step-tag-plan">Plan</div>
+            <h4>Explicit plan built before execution</h4>
+            <p>The planner decomposes the goal into a DAG of tasks — each with declared dependencies and expected outputs. The raw plan passes through an optional self-review pass (the LLM critiques its own draft for completeness and realism), then structural validation and constraint checks before any node is committed. You can inspect the full plan at this point and edit it freely before anything runs.</p>
           </div>
         </div>
         <div class="step">
           <span class="snum">03</span>
           <div class="sbody">
-            <h4>Task → subgoal expansion</h4>
-            <p>Any task in the graph can be promoted to a subgoal at any time — from the web UI or programmatically. The planner will treat it as a new root and decompose it into a finer-grained sub-DAG, letting you drill down into any part of the plan without rebuilding from scratch.</p>
+            <div class="step-tag step-tag-ctrl">Control</div>
+            <h4>Inspect, edit, and redirect — at any time</h4>
+            <p>The plan is live and mutable throughout execution. Pause the LLM, edit a task's description or dependencies, promote a task into a subgoal for a finer breakdown, or switch to a different goal entirely. Execution resumes from the updated graph — only affected branches re-run, everything already completed stays done.</p>
           </div>
         </div>
         <div class="step">
           <span class="snum">04</span>
           <div class="sbody">
-            <h4>SimpleOrchestrator dispatches</h4>
-            <p>Ready nodes — all dependencies met — are picked up and dispatched to the LLMExecutor concurrently.</p>
+            <div class="step-tag step-tag-exec">Execute</div>
+            <h4>Ready tasks dispatched concurrently</h4>
+            <p>The orchestrator picks up nodes whose dependencies are met and dispatches them in parallel, up to the configured worker count.</p>
           </div>
         </div>
         <div class="step">
           <span class="snum">05</span>
           <div class="sbody">
-            <h4>LLMExecutor runs tools</h4>
-            <p>A multi-turn LLM loop calls code execution, file I/O, and custom skills until the task is marked complete.</p>
+            <div class="step-tag step-tag-exec">Execute</div>
+            <h4>LLM + tools do the actual work</h4>
+            <p>Each task runs as a multi-turn LLM loop with access to real tools: code execution, file I/O, web access, and any custom skills you've registered. Results are concrete outputs passed directly to downstream tasks, not summaries.</p>
           </div>
         </div>
         <div class="step">
           <span class="snum">06</span>
           <div class="sbody">
-            <h4>QualityGate verifies</h4>
-            <p>Each result is checked against declared outputs. Missing pieces trigger automatic bridging tasks — no manual patching.</p>
+            <div class="step-tag step-tag-exec">Execute</div>
+            <h4>Results quality-checked automatically</h4>
+            <p>The QualityGate compares each result against the task's declared outputs. If something is missing, a bridging task is injected and the gap is closed before downstream nodes proceed.</p>
           </div>
         </div>
         <div class="step">
           <span class="snum">07</span>
           <div class="sbody">
-            <h4>EventLog persists state</h4>
-            <p>Every mutation is written to a JSONL event log. Crash and resume from exactly where you left off, zero lost work.</p>
+            <div class="step-tag step-tag-ctrl">Control</div>
+            <h4>Crash-proof state throughout</h4>
+            <p>Every graph mutation is appended to a JSONL event log. Restart after a crash and the system picks up exactly where it left off — completed tasks stay done, only interrupted ones re-run.</p>
           </div>
         </div>
       </div>
 
-      <div class="pipeline-note">
-        <div class="pipeline-note-icon">◈</div>
-        <p><strong>Planning pipeline:</strong> raw LLM output → optional scrutiny pass → structural validation → constraint checks (cycle detection, ghost node resolution, orphaned input cleanup) → committed to graph. Each stage has a clearly scoped responsibility — a bad scrutiny call can never corrupt the graph.</p>
+      <div class="control-callout">
+        <div class="cc-hdr">What you can do at any point during a run</div>
+        <div class="cc-body">
+          <div class="cc-row"><span class="cc-icon">⏸</span><span>Pause the LLM — all in-flight tasks complete, no new ones start until you resume.</span></div>
+          <div class="cc-row"><span class="cc-icon">✎</span><span>Edit any task's description or dependencies — the graph updates live and only affected nodes re-run.</span></div>
+          <div class="cc-row"><span class="cc-icon">⊙</span><span>Promote a task to a subgoal — the planner decomposes it into a finer sub-DAG without rebuilding the whole plan.</span></div>
+          <div class="cc-row"><span class="cc-icon">↺</span><span>Retry a failed node, or reset a subtree to re-execute an entire branch with updated context.</span></div>
+          <div class="cc-row"><span class="cc-icon">⇄</span><span>Switch to a different goal entirely — the running orchestrator stops cleanly and a new one starts from the updated state.</span></div>
+        </div>
       </div>
 
       <div class="cb" style="margin-top:1.5rem">
         <div class="cb-hdr">
           <div class="dots"><span></span><span></span><span></span></div>
-          <span class="cb-title">pipeline</span>
+          <span class="cb-title">full loop</span>
         </div>
         <pre><code><span class="co">goal</span> → <span class="co">LLMPlanner</span> → <span class="cd2">[scrutinize?]</span> → <span class="cd2">[validate]</span> → <span class="cd2">[constraint check]</span>
                                                                     │
-                                                          <span class="cb2">TaskGraph (DAG)</span>
+                                                          <span class="cb2">TaskGraph  ← inspect &amp; edit anytime</span>
                                                                     │
                                                         <span class="co">SimpleOrchestrator</span>
-                                                        ├── <span class="cb2">LLMExecutor</span> + tools
+                                                        ├── <span class="cb2">LLMExecutor</span> + tools + skills
                                                         └── <span class="cg">QualityGate</span>  (verify / bridge)
                                                                     │
-                                                               <span class="cd2">EventLog</span> (JSONL) → replay on restart</code></pre>
+                                                               <span class="cd2">EventLog</span> (JSONL) → crash-proof replay</code></pre>
       </div>
     </div>
   </section>
@@ -518,65 +476,76 @@ footer { padding: 2.25rem 2rem; }
   <section id="features">
     <div class="inner">
       <div class="sec-label">Features</div>
-      <h2>Everything the toddler<br>needs to walk steady</h2>
+      <h2>Everything needed to plan<br>precisely and execute reliably</h2>
       <div class="feat-grid">
+
+        <!-- Planning features -->
         <div class="feat-card">
           <div class="feat-icon">⬡</div>
-          <h3>Task Graph Decomposition</h3>
-          <p>Goals become a DAG. Each node is a discrete executable unit with declared dependencies and expected outputs. The planning pipeline validates every plan before any node is committed.</p>
-        </div>
-        <div class="feat-card feat-new">
-          <div class="feat-badge">New</div>
-          <div class="feat-icon">⊙</div>
-          <h3>Task → Subgoal Expansion</h3>
-          <p>Any task can be promoted to a subgoal for a finer-grained breakdown. The planner decomposes it into a sub-DAG, letting you drill down into any part of the plan without rebuilding from scratch.</p>
+          <h3>Explicit Plan Before Execution</h3>
+          <p>The full task graph — every step, dependency, and expected output — is built and visible before the first tool is called. No action without a declared intent.</p>
         </div>
         <div class="feat-card feat-new">
           <div class="feat-badge">New</div>
           <div class="feat-icon">✦</div>
           <h3>Plan Scrutiny Pass</h3>
-          <p>An optional second LLM call reviews each draft plan for goal coverage, task realism, output completeness, and missing implicit steps — and returns a corrected version before validation.</p>
+          <p>An optional second LLM call reviews each draft plan for goal coverage, task realism, output completeness, and missing implicit steps before anything reaches the graph.</p>
         </div>
         <div class="feat-card feat-new">
           <div class="feat-badge">New</div>
           <div class="feat-icon">◈</div>
           <h3>Constraint Enforcement</h3>
-          <p>A deterministic post-validation pass detects cycles, removes duplicate edges, strips orphaned inputs, and resolves ghost nodes (nodes nothing depends on) via a targeted LLM call.</p>
+          <p>A deterministic pass after validation catches cycles, removes duplicate edges, strips orphaned inputs, and resolves ghost nodes — before any node executes.</p>
         </div>
+        <div class="feat-card feat-new">
+          <div class="feat-badge">New</div>
+          <div class="feat-icon">⊙</div>
+          <h3>Task → Subgoal Expansion</h3>
+          <p>Any task can be promoted to a subgoal at any time for a finer-grained breakdown. The planner decomposes it into a sub-DAG without touching the rest of the plan.</p>
+        </div>
+
+        <!-- Control features -->
+        <div class="feat-card">
+          <div class="feat-icon">✎</div>
+          <h3>Live Plan Editing</h3>
+          <p>Edit task descriptions, add or remove dependencies, and restructure the graph while execution is running. Only affected branches re-run — completed work is always preserved.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">⏸</div>
+          <h3>Pause &amp; Redirect</h3>
+          <p>Pause the LLM at any point, inspect progress, make changes, then resume — or switch to a different goal entirely. The system stops cleanly and picks up from the updated state.</p>
+        </div>
+
+        <!-- Execution features -->
         <div class="feat-card">
           <div class="feat-icon">◻</div>
-          <h3>Multi-Backend Support</h3>
-          <p>Swap between Claude, OpenAI, any compatible API, or a fully local llama.cpp model with one config line. The backend is auto-detected from your environment on first run.</p>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon">↺</div>
-          <h3>Crash &amp; Resume</h3>
-          <p>Full JSONL event log after every node. Failures restart only the affected branch — not the whole plan.</p>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon">◻</div>
-          <h3>Extensible Skills</h3>
-          <p>Drop a folder with a <code>SKILL.md</code> into the skills directory. The SkillLoader discovers it automatically.</p>
+          <h3>Real Tool Execution</h3>
+          <p>Tasks execute with real tools: code execution, file I/O, web access. Add custom skills by dropping a <code>SKILL.md</code> folder into the skills directory — no code changes required.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">⊕</div>
           <h3>Automatic Gap Bridging</h3>
-          <p>The QualityGate checks results against declared outputs. Missing pieces inject bridging tasks automatically.</p>
+          <p>The QualityGate checks each result against declared outputs. Missing pieces automatically inject a bridging task so the plan stays coherent without manual intervention.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">↺</div>
+          <h3>Crash &amp; Resume</h3>
+          <p>Every mutation is logged to JSONL. Restart after a crash and completed tasks stay done — only interrupted work re-runs. The event log is the source of truth.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">◻</div>
+          <h3>Multi-Backend Support</h3>
+          <p>Swap between Claude, OpenAI, any compatible API, or a fully local llama.cpp model with one config line. Backend auto-detected from your environment on first run.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">▣</div>
           <h3>Terminal &amp; Web UI</h3>
-          <p>A live curses terminal UI for headless use, plus a web UI that opens automatically, updates in real time, and supports switching to a different goal mid-session.</p>
+          <p>A live curses terminal for headless use and a web UI that shows the full task graph in real time, lets you edit nodes directly, and supports mid-session goal switching.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">◬</div>
           <h3>Local Model Support</h3>
-          <p>Run entirely offline with llama.cpp on Apple Silicon, NVIDIA, or CPU. Full privacy, no API costs.</p>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon">≡</div>
-          <h3>Git DAG Projection</h3>
-          <p>The task graph is mirrored as a Git repo — a browsable, diffable history of every planning decision.</p>
+          <p>Run entirely offline with llama.cpp on Apple Silicon, NVIDIA, or CPU. Full privacy, no API costs, no data leaving your machine.</p>
         </div>
       </div>
     </div>
@@ -587,12 +556,9 @@ footer { padding: 2.25rem 2rem; }
     <div class="inner">
       <div class="sec-label">Backends</div>
       <h2>One config line.<br>Any model.</h2>
-      <p style="margin-bottom:1.75rem">The planning layer is fully model-agnostic. Switch backends by editing <code>[llm] backend</code> in <code>config.toml</code> — everything else stays the same.</p>
-
+      <p style="margin-bottom:1.75rem">The planning and execution layers are fully model-agnostic. Switch backends by editing <code>[llm] backend</code> in <code>config.toml</code> — every prompt, schema, and tool call works identically across all backends.</p>
       <div class="btable">
-        <div class="brow bhdr">
-          <span>Backend</span><span>Install</span><span>Env var</span>
-        </div>
+        <div class="brow bhdr"><span>Backend</span><span>Install</span><span>Env var</span></div>
         <div class="brow">
           <span class="bn">claude</span>
           <span class="bc">pip install cuddlytoddly[claude]</span>
@@ -614,11 +580,9 @@ footer { padding: 2.25rem 2rem; }
           <span class="be">provider key</span>
         </div>
       </div>
-
       <div class="backend-note">
-        The pip extra installs the required packages. The active backend is written to <code>config.toml</code> on first run and auto-detected from your environment: <code>ANTHROPIC_API_KEY</code> set → <code>claude</code>, <code>OPENAI_API_KEY</code> set → <code>openai</code>, neither set → <code>llamacpp</code>. Edit <code>[llm] backend</code> in <code>config.toml</code> to change it at any time.
-        <br><br>
-        <strong>Local default:</strong> Llama 3.3 70B Instruct Q4_K_M — auto-detected from llama.cpp or Hugging Face cache.
+        The pip extra installs the required packages. The active backend is written to <code>config.toml</code> on first run and auto-detected from your environment: <code>ANTHROPIC_API_KEY</code> set → <code>claude</code>, <code>OPENAI_API_KEY</code> set → <code>openai</code>, neither → <code>llamacpp</code>. Edit <code>[llm] backend</code> in <code>config.toml</code> to change it at any time.<br><br>
+        Local default: Llama 3.3 70B Instruct Q4_K_M — auto-detected from llama.cpp or Hugging Face cache.
       </div>
     </div>
   </section>
@@ -628,50 +592,37 @@ footer { padding: 2.25rem 2rem; }
     <div class="inner">
       <div class="sec-label">Quick Start</div>
       <h2>Up and running<br>in three steps</h2>
-
       <div class="qs-steps">
         <div>
           <div class="qs-label">Step 1 — Install with your chosen backend</div>
           <div class="cb">
-            <div class="cb-hdr">
-              <div class="dots"><span></span><span></span><span></span></div>
-              <span class="cb-title">terminal</span>
-            </div>
+            <div class="cb-hdr"><div class="dots"><span></span><span></span><span></span></div><span class="cb-title">terminal</span></div>
             <pre><code><span class="ck">pip install</span> cuddlytoddly[claude]   <span class="cm"># Anthropic Claude</span>
 <span class="ck">pip install</span> cuddlytoddly[openai]   <span class="cm"># OpenAI / compatible</span>
 <span class="ck">pip install</span> cuddlytoddly[local]    <span class="cm"># Local llama.cpp</span>
 <span class="ck">pip install</span> cuddlytoddly[all]      <span class="cm"># Everything</span></code></pre>
           </div>
         </div>
-
         <div>
           <div class="qs-label">Step 2 — Set your API key</div>
           <div class="cb">
-            <div class="cb-hdr">
-              <div class="dots"><span></span><span></span><span></span></div>
-              <span class="cb-title">terminal</span>
-            </div>
+            <div class="cb-hdr"><div class="dots"><span></span><span></span><span></span></div><span class="cb-title">terminal</span></div>
             <pre><code><span class="ck">export</span> <span class="cx">ANTHROPIC_API_KEY</span>=<span class="cs">sk-ant-...</span>
-<span class="cm"># or OPENAI_API_KEY for the openai backend
-# The backend is auto-detected from whichever key is set on first run</span></code></pre>
+<span class="cm"># or OPENAI_API_KEY — whichever key is set becomes the default backend on first run</span></code></pre>
           </div>
         </div>
-
         <div>
           <div class="qs-label">Step 3 — Run a goal</div>
           <div class="cb">
-            <div class="cb-hdr">
-              <div class="dots"><span></span><span></span><span></span></div>
-              <span class="cb-title">terminal</span>
-            </div>
+            <div class="cb-hdr"><div class="dots"><span></span><span></span><span></span></div><span class="cb-title">terminal</span></div>
             <pre><code>cuddlytoddly <span class="cs">"Write a market analysis for electric scooters"</span>
 
-<span class="cm"># config.toml is written on first run — open it to change backends,
-# model settings, temperature, scrutinize_plan, and more.
-# The web UI opens automatically. Switch goals mid-session from the UI.
-# All run data is stored locally and is resumable after a crash.</span>
+<span class="cm"># The web UI opens automatically showing the full task plan.
+# Inspect or edit it before execution starts, or just let it run.
+# Pause, redirect, or promote any task to a subgoal at any time.
+# All state is persisted — resume exactly where you left off after a crash.
 
-<span class="cm"># Print your config path:</span>
+# Print your config path to tune backends, scrutinize_plan, budgets, and more:</span>
 <span class="ck">python</span> -c <span class="cs">"from cuddlytoddly.config import CONFIG_PATH; print(CONFIG_PATH)"</span></code></pre>
           </div>
         </div>
@@ -685,12 +636,9 @@ footer { padding: 2.25rem 2rem; }
     <div class="inner">
       <div class="sec-label">Python API</div>
       <h2>Use it as a library,<br>not just a CLI</h2>
-      <p style="margin-bottom:1.5rem">Every component is importable. Swap backends with a single argument — the rest of the code is identical across Claude, OpenAI, and llama.cpp.</p>
+      <p style="margin-bottom:1.5rem">Every component is importable and independently configurable. Swap backends with a single argument — planning, execution, and quality-checking all work identically across Claude, OpenAI, and llama.cpp.</p>
       <div class="cb">
-        <div class="cb-hdr">
-          <div class="dots"><span></span><span></span><span></span></div>
-          <span class="cb-title">python</span>
-        </div>
+        <div class="cb-hdr"><div class="dots"><span></span><span></span><span></span></div><span class="cb-title">python</span></div>
         <pre><code><span class="ck">from</span> cuddlytoddly.planning.llm_interface  <span class="ck">import</span> create_llm_client
 <span class="ck">from</span> cuddlytoddly.planning.llm_planner    <span class="ck">import</span> LLMPlanner
 <span class="ck">from</span> cuddlytoddly.planning.llm_executor   <span class="ck">import</span> LLMExecutor
@@ -709,18 +657,18 @@ footer { padding: 2.25rem 2rem; }
     planner=LLMPlanner(
         llm_client=<span class="cx">llm</span>, graph=<span class="cx">graph</span>,
         skills_summary=<span class="cx">skills</span>.prompt_summary,
-        scrutinize_plan=<span class="cb2">True</span>,   <span class="cm"># optional: LLM self-reviews each draft plan</span>
+        scrutinize_plan=<span class="cb2">True</span>,  <span class="cm"># LLM self-reviews each draft plan before execution</span>
     ),
-    executor=LLMExecutor(llm_client=<span class="cx">llm</span>,
-                         tool_registry=<span class="cx">skills</span>.registry),
-    quality_gate=QualityGate(llm_client=<span class="cx">llm</span>,
-                             tool_registry=<span class="cx">skills</span>.registry),
+    executor=LLMExecutor(llm_client=<span class="cx">llm</span>, tool_registry=<span class="cx">skills</span>.registry),
+    quality_gate=QualityGate(llm_client=<span class="cx">llm</span>, tool_registry=<span class="cx">skills</span>.registry),
 )
-<span class="cx">orchestrator</span>.start()  <span class="cm"># runs in background</span>
+<span class="cx">orchestrator</span>.start()  <span class="cm"># graph is live and editable at any point</span>
 
-<span class="cm"># Any task can be promoted to a subgoal for finer-grained breakdown:</span>
-<span class="cm"># set its node_type to "goal" and expanded to False — the planner</span>
-<span class="cm"># will decompose it into a sub-DAG on the next planning cycle.</span></code></pre>
+<span class="cm"># Pause execution at any time:</span>
+<span class="cx">orchestrator</span>.stop_llm_calls()
+
+<span class="cm"># Promote a task to a subgoal for a finer-grained breakdown:</span>
+<span class="cm"># set its node_type → "goal", expanded → False; planner picks it up next cycle</span></code></pre>
       </div>
     </div>
   </section>
@@ -733,7 +681,7 @@ footer { padding: 2.25rem 2rem; }
       <div class="doc-grid">
         <a class="doc-card" href="https://github.com/3IVIS/cuddlytoddly/blob/main/docs/architecture.md" target="_blank">
           <span class="doc-title">Architecture</span>
-          <span class="doc-desc">The full planning pipeline, data flow, concurrency model, and module map.</span>
+          <span class="doc-desc">Planning pipeline, execution flow, concurrency model, and full module map.</span>
         </a>
         <a class="doc-card" href="https://github.com/3IVIS/cuddlytoddly/blob/main/docs/configuration.md" target="_blank">
           <span class="doc-title">Configuration</span>
