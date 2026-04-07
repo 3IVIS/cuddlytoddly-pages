@@ -231,6 +231,88 @@ section:nth-child(odd) { background: var(--bg-alt); }
 .cd2 { color: var(--dim); } .ck { color: var(--blue); } .cs { color: var(--amber); }
 .cx { color: var(--green); } .cm { color: var(--dim); }
 
+/* ── DEMO RUNS ── */
+.demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+.demo-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  transition: border-color .22s, transform .2s;
+}
+.demo-card:hover { border-color: var(--bwarm); transform: translateY(-3px); }
+.demo-screens {
+  position: relative;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-code);
+}
+.demo-screen-wrap {
+  height: 210px;
+  overflow: hidden;
+  position: relative;
+}
+.demo-screen-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: top left;
+  display: block;
+  transition: transform .35s ease;
+  filter: brightness(.92);
+}
+.demo-card:hover .demo-screen-wrap img {
+  transform: scale(1.03);
+  filter: brightness(1);
+}
+.demo-screen-label {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: .35rem .75rem;
+  background: linear-gradient(transparent, rgba(17,16,19,.92));
+  font-family: var(--mono); font-size: .64rem;
+  color: var(--dim); letter-spacing: .08em;
+  pointer-events: none;
+}
+.demo-body { padding: 1.2rem 1.4rem 1.4rem; }
+.demo-goal-label {
+  font-family: var(--mono); font-size: .64rem;
+  color: var(--amber); letter-spacing: .1em;
+  text-transform: uppercase; opacity: .6;
+  margin-bottom: .4rem;
+}
+.demo-title {
+  font-family: var(--serif); font-size: 1.05rem;
+  color: var(--text); font-weight: 600;
+  line-height: 1.35; margin-bottom: 1rem;
+}
+.demo-desc {
+  font-size: .82rem; color: var(--muted);
+  line-height: 1.6; margin-bottom: 1.1rem;
+}
+.demo-actions { display: flex; gap: .6rem; flex-wrap: wrap; }
+.demo-btn {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-family: var(--mono); font-size: .7rem; letter-spacing: .04em;
+  padding: .38rem .9rem; border-radius: 5px;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.demo-btn-primary {
+  background: var(--amber-dim);
+  border: 1px solid var(--bwarm);
+  color: var(--amber);
+}
+.demo-btn-primary:hover { background: rgba(201,169,110,.2); opacity: 1; }
+.demo-btn-secondary {
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.demo-btn-secondary:hover { border-color: var(--bwarm); color: var(--text); opacity: 1; }
+.demo-intro {
+  font-size: .95rem; color: var(--muted);
+  margin-bottom: 2rem; line-height: 1.7;
+}
+
 /* ── FEATURES ── */
 .feat-grid {
   display: grid;
@@ -324,6 +406,7 @@ footer { padding: 2.25rem 2rem; }
   .brow { grid-template-columns: 1fr 1.5fr; }
   .be { display: none; }
   .footer-inner { flex-direction: column; align-items: flex-start; }
+  .demo-grid { grid-template-columns: 1fr; }
 }
   </style>
 </head>
@@ -334,6 +417,7 @@ footer { padding: 2.25rem 2rem; }
     <span class="nav-logo">cuddlytoddly</span>
     <div class="nav-links">
       <a href="#how">How it works</a>
+      <a href="#demo">Demo</a>
       <a href="#features">Features</a>
       <a href="#quickstart">Quick Start</a>
       <a href="https://github.com/3IVIS/cuddlytoddly" class="nav-gh" target="_blank">
@@ -357,7 +441,7 @@ footer { padding: 2.25rem 2rem; }
         </div>
         <div class="hero-actions">
           <a href="#quickstart" class="btn btn-solid">Get Started</a>
-          <a href="#how" class="btn btn-outline">How it works</a>
+          <a href="#demo" class="btn btn-outline">See a demo run</a>
         </div>
       </div>
       <div class="hero-mascot">
@@ -397,12 +481,20 @@ footer { padding: 2.25rem 2rem; }
           <span class="snum">02</span>
           <div class="sbody">
             <div class="step-tag step-tag-plan">Plan</div>
-            <h4>Explicit plan built before execution</h4>
-            <p>The planner decomposes the goal into a DAG of tasks — each with declared dependencies and expected outputs. The raw plan passes through an optional self-review pass (the LLM critiques its own draft for completeness and realism), then structural validation and constraint checks before any node is committed. You can inspect the full plan at this point and edit it freely before anything runs.</p>
+            <h4>Context extracted and clarified before planning begins</h4>
+            <p>Before decomposing the goal, the planner reads it carefully and extracts every concrete fact you've already stated — budget, size, hard constraints, locations, roles — and pre-fills those as known context fields. It then identifies what's genuinely missing and surfaces only that for your optional input. Facts that can be fetched at runtime (market prices, public data) are never asked of you. This grounded context flows into every task in the plan.</p>
           </div>
         </div>
         <div class="step">
           <span class="snum">03</span>
+          <div class="sbody">
+            <div class="step-tag step-tag-plan">Plan</div>
+            <h4>Explicit plan built before execution</h4>
+            <p>The planner decomposes the goal into a DAG of tasks — each with declared dependencies and expected outputs — using the clarified context. The raw plan passes through an optional self-review pass (the LLM critiques its own draft for completeness and realism), then structural validation and constraint checks before any node is committed. You can inspect the full plan and edit it freely before anything runs.</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="snum">04</span>
           <div class="sbody">
             <div class="step-tag step-tag-ctrl">Control</div>
             <h4>Inspect, edit, and redirect — at any time</h4>
@@ -410,7 +502,7 @@ footer { padding: 2.25rem 2rem; }
           </div>
         </div>
         <div class="step">
-          <span class="snum">04</span>
+          <span class="snum">05</span>
           <div class="sbody">
             <div class="step-tag step-tag-exec">Execute</div>
             <h4>Ready tasks dispatched concurrently</h4>
@@ -418,7 +510,7 @@ footer { padding: 2.25rem 2rem; }
           </div>
         </div>
         <div class="step">
-          <span class="snum">05</span>
+          <span class="snum">06</span>
           <div class="sbody">
             <div class="step-tag step-tag-exec">Execute</div>
             <h4>LLM + tools do the actual work</h4>
@@ -426,7 +518,7 @@ footer { padding: 2.25rem 2rem; }
           </div>
         </div>
         <div class="step">
-          <span class="snum">06</span>
+          <span class="snum">07</span>
           <div class="sbody">
             <div class="step-tag step-tag-exec">Execute</div>
             <h4>Results quality-checked automatically</h4>
@@ -434,11 +526,11 @@ footer { padding: 2.25rem 2rem; }
           </div>
         </div>
         <div class="step">
-          <span class="snum">07</span>
+          <span class="snum">08</span>
           <div class="sbody">
             <div class="step-tag step-tag-ctrl">Control</div>
             <h4>Crash-proof state throughout</h4>
-            <p>Every graph mutation is appended to a JSONL event log. Restart after a crash and the system picks up exactly where it left off — completed tasks stay done, only interrupted ones re-run.</p>
+            <p>Every graph mutation is appended to a JSONL event log. Restart after a crash and the system picks up exactly where it left off — completed tasks stay done, only interrupted ones re-run. When resuming, the full token history from the prior session is restored so the UI always shows the correct cumulative count.</p>
           </div>
         </div>
       </div>
@@ -459,16 +551,89 @@ footer { padding: 2.25rem 2rem; }
           <div class="dots"><span></span><span></span><span></span></div>
           <span class="cb-title">full loop</span>
         </div>
-        <pre><code><span class="co">goal</span> → <span class="co">LLMPlanner</span> → <span class="cd2">[scrutinize?]</span> → <span class="cd2">[validate]</span> → <span class="cd2">[constraint check]</span>
-                                                                    │
-                                                          <span class="cb2">TaskGraph  ← inspect &amp; edit anytime</span>
-                                                                    │
-                                                        <span class="co">Orchestrator</span>
-                                                        ├── <span class="cb2">LLMExecutor</span> + tools + skills
-                                                        └── <span class="cg">QualityGate</span>  (verify / bridge)
-                                                                    │
-                                                               <span class="cd2">EventLog</span> (JSONL) → crash-proof replay</code></pre>
+        <pre><code><span class="co">goal</span> → <span class="co">LLMPlanner</span> → <span class="cd2">[extract facts + clarify]</span> → <span class="cd2">[decompose]</span> → <span class="cd2">[scrutinize?]</span> → <span class="cd2">[validate]</span> → <span class="cd2">[constraints]</span>
+                                                                                                    │
+                                                                                          <span class="cb2">TaskGraph  ← inspect &amp; edit anytime</span>
+                                                                                                    │
+                                                                                        <span class="co">Orchestrator</span>
+                                                                                        ├── <span class="cb2">LLMExecutor</span> + tools + skills
+                                                                                        └── <span class="cg">QualityGate</span>  (verify / bridge)
+                                                                                                    │
+                                                                                               <span class="cd2">EventLog</span> (JSONL) → crash-proof replay</code></pre>
       </div>
+    </div>
+  </section>
+
+  <!-- DEMO RUNS -->
+  <section id="demo">
+    <div class="inner">
+      <div class="sec-label">Demo runs</div>
+      <h2>Real goals, real plans,<br>real output</h2>
+      <p class="demo-intro">Every run produces a standalone interactive snapshot — the full task graph with node details, results, and a replay of the plan's evolution — and an optional terminal view for headless environments. The two examples below are complete, unedited runs.</p>
+
+      <div class="demo-grid">
+
+        <!-- Demo 1: SaaS Business -->
+        <div class="demo-card">
+          <div class="demo-screens">
+            <div class="demo-screen-wrap">
+              <img
+                src="https://cuddlytoddly.com/runs/how_to_build_a_saas_business.png"
+                alt="Terminal UI snapshot — how to build a SaaS business run"
+                loading="lazy"
+              >
+            </div>
+            <span class="demo-screen-label">terminal ui snapshot</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-goal-label">Goal</div>
+            <div class="demo-title">How to build a SaaS business</div>
+            <p class="demo-desc">Full plan decomposition covering market research, product strategy, go-to-market, pricing, and launch sequencing — executed with web research and structured outputs at each step.</p>
+            <div class="demo-actions">
+              <a class="demo-btn demo-btn-primary" href="https://cuddlytoddly.com/runs/how_to_build_a_saas_business.html" target="_blank">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Interactive DAG snapshot
+              </a>
+              <a class="demo-btn demo-btn-secondary" href="https://cuddlytoddly.com/runs/how_to_build_a_saas_business.png" target="_blank">
+                Terminal view
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Demo 2: Negotiate a Raise -->
+        <div class="demo-card">
+          <div class="demo-screens">
+            <div class="demo-screen-wrap">
+              <img
+                src="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise.png"
+                alt="Terminal UI snapshot — how to negotiate a raise run"
+                loading="lazy"
+              >
+            </div>
+            <span class="demo-screen-label">terminal ui snapshot</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-goal-label">Goal</div>
+            <div class="demo-title">How to negotiate a raise</div>
+            <p class="demo-desc">Research-backed plan covering market rate benchmarking, timing strategy, argument construction, and conversation scripts — grounded in publicly available salary data fetched at runtime.</p>
+            <div class="demo-actions">
+              <a class="demo-btn demo-btn-primary" href="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise.html" target="_blank">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Interactive DAG snapshot
+              </a>
+              <a class="demo-btn demo-btn-secondary" href="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise.png" target="_blank">
+                Terminal view
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <p style="margin-top:1.5rem; font-size:.8rem; font-family:var(--mono); color:var(--dim);">
+        Interactive snapshots are fully self-contained HTML files — no server connection required. Export your own via the web UI's <code style="color:var(--dim)">↓ Export → Snapshot HTML</code> button.
+      </p>
     </div>
   </section>
 
@@ -484,6 +649,12 @@ footer { padding: 2.25rem 2rem; }
           <div class="feat-icon">⬡</div>
           <h3>Explicit Plan Before Execution</h3>
           <p>The full task graph — every step, dependency, and expected output — is built and visible before the first tool is called. No action without a declared intent.</p>
+        </div>
+        <div class="feat-card feat-new">
+          <div class="feat-badge">New</div>
+          <div class="feat-icon">◉</div>
+          <h3>Grounded Clarification</h3>
+          <p>Before planning, the system extracts every concrete fact already in your goal — budget, constraints, size, location — and pre-fills them as known fields. Only genuinely missing information is surfaced for input. Tool-fetchable facts are never asked of you.</p>
         </div>
         <div class="feat-card feat-new">
           <div class="feat-badge">New</div>
@@ -530,7 +701,7 @@ footer { padding: 2.25rem 2rem; }
         <div class="feat-card">
           <div class="feat-icon">↺</div>
           <h3>Crash &amp; Resume</h3>
-          <p>Every mutation is logged to JSONL. Restart after a crash and completed tasks stay done — only interrupted work re-runs. The event log is the source of truth.</p>
+          <p>Every mutation is logged to JSONL. Restart after a crash and completed tasks stay done — only interrupted work re-runs. Token history is restored so the UI always shows the correct cumulative count.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">◻</div>
@@ -540,7 +711,7 @@ footer { padding: 2.25rem 2rem; }
         <div class="feat-card">
           <div class="feat-icon">▣</div>
           <h3>Terminal &amp; Web UI</h3>
-          <p>A live curses terminal for headless use and a web UI that shows the full task graph in real time, lets you edit nodes directly, and supports mid-session goal switching.</p>
+          <p>A live curses terminal for headless use and a web UI that shows the full task graph in real time, lets you edit nodes directly, supports mid-session goal switching, and exports standalone interactive HTML snapshots.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">◬</div>
