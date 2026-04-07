@@ -256,14 +256,21 @@ section:nth-child(odd) { background: var(--bg-alt); }
   position: relative;
 }
 .demo-screen-wrap img {
+  position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover; object-position: top left;
   display: block;
-  transition: transform .35s ease;
+  opacity: 0;
+  transition: opacity .9s ease, transform .9s ease;
+  transform: scale(1.02);
   filter: brightness(.92);
 }
-.demo-card:hover .demo-screen-wrap img {
-  transform: scale(1.03);
+.demo-screen-wrap img.ds-active {
+  opacity: 1;
+  transform: scale(1);
+  filter: brightness(.92);
+}
+.demo-card:hover .demo-screen-wrap img.ds-active {
   filter: brightness(1);
 }
 .demo-screen-label {
@@ -273,7 +280,20 @@ section:nth-child(odd) { background: var(--bg-alt); }
   font-family: var(--mono); font-size: .64rem;
   color: var(--dim); letter-spacing: .08em;
   pointer-events: none;
+  z-index: 2;
+  transition: opacity .4s ease;
 }
+/* pip indicator dots */
+.demo-screen-dots {
+  position: absolute; top: .6rem; right: .75rem;
+  display: flex; gap: 5px; z-index: 2;
+}
+.demo-screen-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255,255,255,.18);
+  transition: background .35s ease;
+}
+.demo-screen-dot.ds-dot-active { background: var(--amber); }
 .demo-body { padding: 1.2rem 1.4rem 1.4rem; }
 .demo-goal-label {
   font-family: var(--mono); font-size: .64rem;
@@ -576,14 +596,26 @@ footer { padding: 2.25rem 2rem; }
         <!-- Demo 1: SaaS Business -->
         <div class="demo-card">
           <div class="demo-screens">
-            <div class="demo-screen-wrap">
+            <div class="demo-screen-wrap" data-slideshow>
               <img
-                src="https://cuddlytoddly.com/runs/how_to_build_a_saas_business.png"
+                src="https://cuddlytoddly.com/runs/how_to_build_a_saas_business_webui.png"
+                alt="Web UI snapshot — how to build a SaaS business run"
+                loading="lazy"
+                class="ds-active"
+                data-label="web ui"
+              >
+              <img
+                src="https://cuddlytoddly.com/runs/how_to_build_a_saas_business_terminal.png"
                 alt="Terminal UI snapshot — how to build a SaaS business run"
                 loading="lazy"
+                data-label="terminal"
               >
             </div>
-            <span class="demo-screen-label">terminal ui snapshot</span>
+            <span class="demo-screen-label">web ui</span>
+            <div class="demo-screen-dots">
+              <span class="demo-screen-dot ds-dot-active"></span>
+              <span class="demo-screen-dot"></span>
+            </div>
           </div>
           <div class="demo-body">
             <div class="demo-goal-label">Goal</div>
@@ -594,9 +626,6 @@ footer { padding: 2.25rem 2rem; }
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                 Interactive DAG snapshot
               </a>
-              <a class="demo-btn demo-btn-secondary" href="https://cuddlytoddly.com/runs/how_to_build_a_saas_business.png" target="_blank">
-                Terminal view
-              </a>
             </div>
           </div>
         </div>
@@ -604,14 +633,26 @@ footer { padding: 2.25rem 2rem; }
         <!-- Demo 2: Negotiate a Raise -->
         <div class="demo-card">
           <div class="demo-screens">
-            <div class="demo-screen-wrap">
+            <div class="demo-screen-wrap" data-slideshow>
               <img
-                src="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise.png"
+                src="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise_webui.png"
+                alt="Web UI snapshot — how to negotiate a raise run"
+                loading="lazy"
+                class="ds-active"
+                data-label="web ui"
+              >
+              <img
+                src="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise_terminal.png"
                 alt="Terminal UI snapshot — how to negotiate a raise run"
                 loading="lazy"
+                data-label="terminal"
               >
             </div>
-            <span class="demo-screen-label">terminal ui snapshot</span>
+            <span class="demo-screen-label">web ui</span>
+            <div class="demo-screen-dots">
+              <span class="demo-screen-dot ds-dot-active"></span>
+              <span class="demo-screen-dot"></span>
+            </div>
           </div>
           <div class="demo-body">
             <div class="demo-goal-label">Goal</div>
@@ -621,9 +662,6 @@ footer { padding: 2.25rem 2rem; }
               <a class="demo-btn demo-btn-primary" href="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise.html" target="_blank">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                 Interactive DAG snapshot
-              </a>
-              <a class="demo-btn demo-btn-secondary" href="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise.png" target="_blank">
-                Terminal view
               </a>
             </div>
           </div>
@@ -883,5 +921,37 @@ footer { padding: 2.25rem 2rem; }
     </div>
   </footer>
 
+  <script>
+  (function () {
+    var INTERVAL = 3200; // ms per slide
+
+    document.querySelectorAll('[data-slideshow]').forEach(function (wrap) {
+      var imgs   = Array.from(wrap.querySelectorAll('img'));
+      var label  = wrap.closest('.demo-screens').querySelector('.demo-screen-label');
+      var dots   = Array.from(wrap.closest('.demo-screens').querySelectorAll('.demo-screen-dot'));
+      var current = 0;
+
+      // Stagger the two cards so they don't flip in sync
+      var delay = wrap.closest('.demo-card').matches(':nth-child(2) .demo-screen-wrap, .demo-grid > :last-child .demo-screen-wrap') ? INTERVAL / 2 : 0;
+
+      function advance() {
+        var prev = current;
+        current  = (current + 1) % imgs.length;
+
+        imgs[prev].classList.remove('ds-active');
+        imgs[current].classList.add('ds-active');
+
+        dots[prev].classList.remove('ds-dot-active');
+        dots[current].classList.add('ds-dot-active');
+
+        if (label) label.textContent = imgs[current].dataset.label || '';
+      }
+
+      setTimeout(function () {
+        setInterval(advance, INTERVAL);
+      }, delay);
+    });
+  })();
+  </script>
 </body>
 </html>
