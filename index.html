@@ -187,6 +187,17 @@ header { border-bottom: 1px solid var(--border); }
   color: var(--text); margin-bottom: 1.4rem;
   animation: up .55s .08s ease both;
 }
+.hero-tagline {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-style: italic;
+  color: rgba(201,169,110,0.70);
+  border-left: 2px solid rgba(201,169,110,0.28);
+  padding-left: .85rem;
+  margin-bottom: 1.4rem;
+  line-height: 1.55;
+  animation: up .55s .12s ease both;
+}
 .hero-sub {
   font-size: 1rem; color: var(--muted);
   max-width: 490px; margin-bottom: 1.75rem; line-height: 1.75;
@@ -528,6 +539,7 @@ footer { padding: 2.25rem 2rem; }
       <div class="hero-text">
         <p class="eyebrow">Open Source · MIT License · Python 3.11+</p>
         <h1>Holding AI's hand<br>through planning <em>and into execution</em></h1>
+        <p class="hero-tagline">cuddlytoddly is a plan-first AI agent framework where every step is visible, editable, and under your control.</p>
         <p class="hero-sub">cuddlytoddly builds an explicit task plan before touching anything — a visible, editable graph of steps and dependencies. Inspect it, change it, or redirect it at any point. When you're ready, it carries the plan out with real tools, quality-checks the results, and keeps going until the job is done.</p>
         <div class="hero-props" role="list" aria-label="Key features">
           <span class="hero-prop" role="listitem"><span class="hero-prop-dot" aria-hidden="true"></span>Explicit plan before every action</span>
