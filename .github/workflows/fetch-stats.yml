@@ -1,0 +1,352 @@
+name: Fetch GitHub Stats
+
+on:
+  schedule:
+    - cron: '0 2 * * *'   # runs daily at 02:00 UTC
+  workflow_dispatch:        # allows manual trigger from the Actions tab
+  push:
+    paths:
+      - 'repos.txt'         # also re-runs whenever you update repos.txt
+
+jobs:
+  fetch-stats:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # needed to commit data.json back to the repo
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch stats and write data.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node - << 'EOF'
+          const fs    = require('fs');
+          const https = require('https');
+
+          // ── helpers ────────────────────────────────────────────────────
+
+          function sleep(ms) {
+            return new Promise(r => setTimeout(r, ms));
+          }
+
+          /**
+           * Fetch a GitHub API URL.
+           * Returns { ok: true, data } on success.
+           * Returns { ok: false, status, reason } on known HTTP errors — never throws.
+           * Retries up to `retries` times on network errors or 5xx responses.
+           */
+          async function get(url, retries = 3) {
+            const options = {
+              headers: {
+                'Authorization':        `Bearer ${process.env.GITHUB_TOKEN}`,
+                'Accept':               'application/vnd.github+json',
+                'X-GitHub-Api-Version': '2022-11-28',
+                'User-Agent':           'ai-agent-frameworks-observatory'
+              }
+            };
+
+            for (let attempt = 1; attempt <= retries; attempt++) {
+              try {
+                const result = await new Promise((resolve, reject) => {
+                  const req = https.get(url, options, (res) => {
+                    let body = '';
+                    res.on('data', chunk => body += chunk);
+                    res.on('end', () => resolve({
+                      statusCode: res.statusCode,
+                      headers:    res.headers,
+                      body
+                    }));
+                  });
+                  req.on('error', reject);
+                });
+
+                const { statusCode, headers, body } = result;
+
+                if (statusCode === 200) {
+                  try {
+                    return { ok: true, data: JSON.parse(body) };
+                  } catch (e) {
+                    return { ok: false, status: statusCode, reason: `JSON parse error: ${e.message}` };
+                  }
+                }
+
+                if (statusCode === 404) {
+                  return { ok: false, status: 404, reason: 'Not found — repo may have been deleted, renamed, or made private' };
+                }
+
+                if (statusCode === 403 || statusCode === 429) {
+                  const resetEpoch = headers && headers['x-ratelimit-reset'];
+                  if (resetEpoch && attempt < retries) {
+                    const waitMs = Math.max((parseInt(resetEpoch) * 1000) - Date.now(), 0) + 2000;
+                    console.warn(`  ⚠ Rate limited. Waiting ${Math.ceil(waitMs / 1000)}s before retry ${attempt}/${retries}…`);
+                    await sleep(waitMs);
+                    continue;
+                  }
+                  return { ok: false, status: statusCode, reason: 'Rate limited — no reset header or retries exhausted' };
+                }
+
+                if (statusCode >= 500) {
+                  if (attempt < retries) {
+                    const wait = attempt * 3000;
+                    console.warn(`  ⚠ HTTP ${statusCode} (attempt ${attempt}/${retries}). Retrying in ${wait / 1000}s…`);
+                    await sleep(wait);
+                    continue;
+                  }
+                  return { ok: false, status: statusCode, reason: `GitHub server error (${statusCode}) after ${retries} attempts` };
+                }
+
+                return { ok: false, status: statusCode, reason: `Unexpected HTTP status ${statusCode}` };
+
+              } catch (networkErr) {
+                if (attempt < retries) {
+                  const wait = attempt * 2000;
+                  console.warn(`  ⚠ Network error (attempt ${attempt}/${retries}): ${networkErr.message}. Retrying in ${wait / 1000}s…`);
+                  await sleep(wait);
+                } else {
+                  return { ok: false, status: 0, reason: `Network error after ${retries} attempts: ${networkErr.message}` };
+                }
+              }
+            }
+          }
+
+          // ── validate slug ──────────────────────────────────────────────
+
+          function validateSlug(slug) {
+            const parts = slug.split('/');
+            if (parts.length !== 2 || !parts[0].trim() || !parts[1].trim()) {
+              return `Invalid format — expected owner/repo (e.g. langchain-ai/langchain), got "${slug}"`;
+            }
+            if (/[^a-zA-Z0-9._-]/.test(parts[0]) || /[^a-zA-Z0-9._-]/.test(parts[1])) {
+              return `Invalid characters in "${slug}" — only letters, numbers, hyphens, dots, and underscores are allowed`;
+            }
+            return null;
+          }
+
+          // ── validate manual tags ───────────────────────────────────────
+          //
+          // Tags must be lowercase alphanumeric words optionally joined by hyphens.
+          // Invalid tags are dropped with a warning rather than failing the whole run.
+
+          function parseAndValidateTags(rawTagStr, slug) {
+            if (!rawTagStr) return [];
+            const tags    = rawTagStr.split(',').map(t => t.trim().toLowerCase()).filter(Boolean);
+            const valid   = [];
+            const invalid = [];
+            for (const tag of tags) {
+              if (/^[a-z0-9][a-z0-9-]*$/.test(tag)) {
+                valid.push(tag);
+              } else {
+                invalid.push(tag);
+              }
+            }
+            if (invalid.length > 0) {
+              console.warn(`  ⚠ ${slug}: dropping invalid manual tag(s): ${invalid.join(', ')} (use lowercase letters, numbers, hyphens only)`);
+            }
+            return valid;
+          }
+
+          // ── merge tags: manual + github topics, deduped ───────────────
+
+          function mergeTags(manualTags, githubTopics) {
+            const seen   = new Set();
+            const merged = [];
+            // Manual tags come first so they appear at the front
+            for (const t of [...manualTags, ...githubTopics]) {
+              if (!seen.has(t)) { seen.add(t); merged.push(t); }
+            }
+            return merged;
+          }
+
+          // ── load previous data.json as fallback ────────────────────────
+
+          let previousData = null;
+          try {
+            const prev = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+            if (prev.frameworks && prev.frameworks.length > 0) {
+              previousData = prev;
+              console.log(`Found previous data.json — ${previousData.frameworks.length} frameworks from ${previousData.fetchedAt}`);
+            }
+          } catch (_) {
+            console.log('No usable previous data.json — starting fresh');
+          }
+
+          // ── parse repos.txt ────────────────────────────────────────────
+          //
+          // Line format:  owner/repo  [tag1,tag2,tag3]
+          //
+          //   • Fields are split on whitespace
+          //   • Field 1 : slug (required)
+          //   • Field 2 : manual tags, comma-separated (optional)
+          //   • Anything further is ignored
+
+          const rawFile = fs.readFileSync('repos.txt', 'utf8');
+          const lines   = rawFile
+            .split('\n')
+            .map(l => l.trim())
+            .filter(l => l && !l.startsWith('#'));
+
+          const invalidEntries = [];
+          const entries        = [];   // [{ slug, manualTags }]
+
+          for (const line of lines) {
+            const parts      = line.split(/\s+/);
+            const slug       = parts[0];
+            const rawTags    = parts[1] || '';          // second field, may be absent
+            const slugError  = validateSlug(slug);
+
+            if (slugError) {
+              invalidEntries.push({ slug, reason: slugError, status: 'invalid-format' });
+              console.error(`  ✗ Skipping bad entry: ${slugError}`);
+              continue;
+            }
+
+            const manualTags = parseAndValidateTags(rawTags, slug);
+            entries.push({ slug, manualTags });
+          }
+
+          // Deduplicate slugs
+          const seen     = new Set();
+          const dupeSkip = [];
+          const unique   = entries.filter(({ slug }) => {
+            if (seen.has(slug)) { dupeSkip.push(slug); return false; }
+            seen.add(slug);
+            return true;
+          });
+          if (dupeSkip.length > 0) {
+            console.warn(`  ⚠ Skipping ${dupeSkip.length} duplicate(s): ${dupeSkip.join(', ')}`);
+          }
+
+          console.log(`\nParsed ${unique.length} repos from repos.txt`);
+          const withTags = unique.filter(e => e.manualTags.length > 0);
+          if (withTags.length > 0) {
+            console.log(`  ${withTags.length} repo(s) have manual tags:`);
+            withTags.forEach(e => console.log(`    ${e.slug}  →  ${e.manualTags.join(', ')}`));
+          }
+          console.log(`\nFetching…\n`);
+
+          // ── fetch ──────────────────────────────────────────────────────
+
+          const results  = [];
+          const failures = [...invalidEntries];
+
+          for (const { slug, manualTags } of unique) {
+            process.stdout.write(`  ${slug} … `);
+
+            const repoRes = await get(`https://api.github.com/repos/${slug}`);
+
+            if (!repoRes.ok) {
+              console.log(`✗ ${repoRes.reason}`);
+              failures.push({ slug, reason: repoRes.reason, status: repoRes.status });
+              await sleep(300);
+              continue;
+            }
+
+            // Topics — non-fatal if this fails
+            const topicsRes    = await get(`https://api.github.com/repos/${slug}/topics`);
+            const githubTopics = topicsRes.ok ? (topicsRes.data.names || []) : [];
+            if (!topicsRes.ok) {
+              console.log(`⚠ fetched repo (topics unavailable: ${topicsRes.reason})`);
+            } else {
+              console.log(`✓ ${repoRes.data.stargazers_count.toLocaleString()} ★`);
+            }
+
+            // Merge manual tags with GitHub topics
+            const allTags = mergeTags(manualTags, githubTopics);
+
+            const d = repoRes.data;
+            results.push({
+              name:        d.name,
+              fullName:    d.full_name,
+              description: d.description  || '',
+              url:         d.html_url,
+              stars:       d.stargazers_count,
+              forks:       d.forks_count,
+              openIssues:  d.open_issues_count,
+              watchers:    d.watchers_count,
+              language:    d.language      || 'Unknown',
+              license:     d.license       ? d.license.spdx_id : 'None',
+              manualTags,                         // stored separately so you can see the source
+              githubTopics,                       // raw GitHub topics, also stored separately
+              topics:      allTags,               // merged list used by the UI
+              updatedAt:   d.updated_at,
+              pushedAt:    d.pushed_at,
+              archived:    d.archived      || false,
+              homepage:    d.homepage      || ''
+            });
+
+            await sleep(250);
+          }
+
+          // ── summary ────────────────────────────────────────────────────
+
+          console.log('\n── Fetch Summary ──────────────────────────────────────────');
+          console.log(`  ✓ Succeeded : ${results.length}`);
+          console.log(`  ✗ Failed    : ${failures.length}`);
+          if (failures.length > 0) {
+            failures.forEach(f => console.log(`      • ${f.slug}  →  ${f.reason}`));
+          }
+
+          // ── guard: never overwrite good data with zero results ─────────
+
+          if (results.length === 0) {
+            console.error('\n✗ CRITICAL: Zero repos fetched successfully.');
+            if (previousData) {
+              console.error('  Preserving previous data.json to avoid data loss.');
+              fs.writeFileSync('data.json', JSON.stringify({
+                ...previousData,
+                lastAttemptAt:    new Date().toISOString(),
+                lastAttemptError: 'All fetches failed — data preserved from previous run',
+                fetchErrors:      failures
+              }, null, 2));
+            } else {
+              console.error('  No previous data to fall back to — data.json left unchanged.');
+            }
+            process.exit(1);
+          }
+
+          // ── warn if failure rate is high ───────────────────────────────
+
+          const hardFailures = failures.filter(f => f.status !== 'invalid-format').length;
+          const failRate     = hardFailures / Math.max(unique.length, 1);
+          if (failRate > 0.25) {
+            console.warn(`\n⚠ WARNING: ${Math.round(failRate * 100)}% of repos failed — check rate limits or stale repos.txt entries`);
+          }
+
+          // ── write data.json ────────────────────────────────────────────
+
+          const output = {
+            fetchedAt:  new Date().toISOString(),
+            count:      results.length,
+            frameworks: results,
+            ...(failures.length > 0 && { fetchErrors: failures })
+          };
+
+          fs.writeFileSync('data.json', JSON.stringify(output, null, 2));
+          console.log(`\n✓ Wrote data.json with ${results.length} frameworks`);
+
+          if (failures.length > 0) {
+            console.error(`\n⚠ ${failures.length} repo(s) could not be fetched (see above). Fix repos.txt and re-run.`);
+            process.exit(2);
+          }
+          EOF
+
+      - name: Commit and push data.json
+        if: success() || failure()
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          if git diff --cached --quiet; then
+            echo "No changes to data.json — nothing to commit"
+          else
+            git commit -m "chore: refresh GitHub stats [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+            git push
+          fi
