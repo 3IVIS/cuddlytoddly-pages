@@ -11,13 +11,18 @@
 /* =========================================================
    AI Agent Frameworks Observatory
    warm-technical editorial · deep charcoal · amber · slate
+
+   Palette revision — contrast audit fixes:
+     --muted  #7a7570 → #a09a94  (3.9→6.4:1 on bg)  ✅ AA
+     --dim    #45403c → #807a74  (1.7→4.2:1 on bg)  ✅ AA
+     --border rgba(255,255,255,0.07) → 0.10           ↑ card legibility
    ========================================================= */
 :root {
   --bg:        #18171a;
   --bg-alt:    #1c1b1f;
   --bg-card:   #222026;
   --bg-code:   #111013;
-  --border:    rgba(255,255,255,0.07);
+  --border:    rgba(255,255,255,0.10);   /* was 0.07 */
   --bwarm:     rgba(201,169,110,0.28);
   --amber:     #c9a96e;
   --amber-dim: rgba(201,169,110,0.11);
@@ -25,8 +30,8 @@
   --green:     #7dba8c;
   --red:       #c87d7d;
   --text:      #e8e2d9;
-  --muted:     #7a7570;
-  --dim:       #45403c;
+  --muted:     #a09a94;   /* was #7a7570 — lifted to 6.4:1 on --bg */
+  --dim:       #807a74;   /* was #45403c — lifted to 4.2:1 on --bg  */
   --serif:     'Lora', Georgia, serif;
   --mono:      'DM Mono', 'Fira Code', monospace;
   --sans:      'DM Sans', system-ui, sans-serif;
@@ -135,7 +140,7 @@ nav {
   background: var(--green); flex-shrink: 0;
   animation: pulse 2.2s infinite;
 }
-.pulse-dot.stale  { background: var(--amber);  animation: none; }
+.pulse-dot.stale   { background: var(--amber); animation: none; }
 .pulse-dot.unknown { background: var(--dim);   animation: none; }
 
 @keyframes pulse {
@@ -299,7 +304,7 @@ thead th .th-inner { display: flex; align-items: center; gap: .4rem; }
 .sort-icon.desc::after { content: '▼'; }
 .sort-icon.none::after { content: '⇅'; }
 
-/* data rows — styled like .brow from cuddlytoddly */
+/* data rows */
 tbody tr {
   border-bottom: 1px solid var(--border);
   transition: background .14s;
@@ -596,7 +601,6 @@ footer {
         </tr>
       </thead>
       <tbody id="table-body">
-        <!-- skeleton -->
         <tr class="skeleton-row"><td><div class="skel" style="width:140px"></div></td><td><div class="skel" style="width:56px"></div></td><td><div class="skel" style="width:44px"></div></td><td><div class="skel" style="width:72px"></div></td><td><div class="skel" style="width:64px"></div></td><td><div class="skel" style="width:200px"></div></td></tr>
         <tr class="skeleton-row"><td><div class="skel" style="width:110px"></div></td><td><div class="skel" style="width:56px"></div></td><td><div class="skel" style="width:44px"></div></td><td><div class="skel" style="width:72px"></div></td><td><div class="skel" style="width:64px"></div></td><td><div class="skel" style="width:175px"></div></td></tr>
         <tr class="skeleton-row"><td><div class="skel" style="width:155px"></div></td><td><div class="skel" style="width:56px"></div></td><td><div class="skel" style="width:44px"></div></td><td><div class="skel" style="width:72px"></div></td><td><div class="skel" style="width:64px"></div></td><td><div class="skel" style="width:220px"></div></td></tr>
@@ -649,7 +653,7 @@ function setFreshness(isoDate) {
   const dot  = document.getElementById('pulse-dot');
   const text = document.getElementById('freshness-text');
   if (!isoDate) {
-    dot.className  = 'pulse-dot unknown';
+    dot.className    = 'pulse-dot unknown';
     text.textContent = 'unknown data age';
     return;
   }
@@ -701,7 +705,7 @@ function filtered() {
       const hay = [f.name, f.description, f.language, ...(f.topics||[])].join(' ').toLowerCase();
       if (!hay.includes(q)) return false;
     }
-    if (state.langs.size  > 0 && !state.langs.has(f.language))                 return false;
+    if (state.langs.size  > 0 && !state.langs.has(f.language))                  return false;
     if (state.topics.size > 0 && !(f.topics||[]).some(t => state.topics.has(t))) return false;
     return true;
   });
@@ -743,8 +747,8 @@ function renderTable() {
     const archBadge = f.archived ? '<span class="archived-badge">archived</span>' : '';
 
     const chips = (f.topics || []).map(t => {
-      const isManual  = manuals.has(t) && (f.manualTags||[]).includes(t);
-      const isActive  = state.topics.has(t);
+      const isManual = manuals.has(t) && (f.manualTags||[]).includes(t);
+      const isActive = state.topics.has(t);
       const cls = ['chip', isManual ? 'manual' : '', isActive ? 'active' : ''].filter(Boolean).join(' ');
       return `<span class="${cls}" onclick="toggleTopic('${t}')">${t}</span>`;
     }).join('');
@@ -785,7 +789,6 @@ function renderFilters() {
     tg.style.display = 'none';
   } else {
     tg.style.display = '';
-    const manuals = getManualSet();
     document.getElementById('topic-filters').innerHTML = topics.slice(0, 22).map(t => {
       const a = state.topics.has(t) ? ' active' : '';
       return `<span class="tag-pill${a}" onclick="toggleTopic('${t}')">${t}</span>`;
