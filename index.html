@@ -4,9 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- ═══════════════════════════════════════════════════
-       PRIMARY SEO
-  ════════════════════════════════════════════════════ -->
   <title>cuddlytoddly — AI Agent Framework with Explicit Task Planning & Execution | Open Source Python</title>
   <meta name="description" content="cuddlytoddly is an open-source Python AI agent framework that builds an explicit, editable task graph before executing anything. Plan, inspect, redirect, and execute with Claude, OpenAI, or local llama.cpp models.">
   <meta name="keywords" content="AI agent framework, LLM task planning, Python AI orchestration, DAG task graph, LLM agent, Claude API, OpenAI agent, llama.cpp, open source AI, agentic AI, AI planning execution, task decomposition">
@@ -15,9 +12,6 @@
   <link rel="canonical" href="https://cuddlytoddly.com/">
   <meta name="theme-color" content="#18171a">
 
-  <!-- ═══════════════════════════════════════════════════
-       OPEN GRAPH (Facebook, LinkedIn, Discord, Slack…)
-  ════════════════════════════════════════════════════ -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://cuddlytoddly.com/">
   <meta property="og:title" content="cuddlytoddly — AI Agent Framework with Explicit Task Planning">
@@ -27,18 +21,12 @@
   <meta property="og:image:height" content="630">
   <meta property="og:site_name" content="cuddlytoddly">
 
-  <!-- ═══════════════════════════════════════════════════
-       TWITTER / X CARD
-  ════════════════════════════════════════════════════ -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@3IVIS">
   <meta name="twitter:title" content="cuddlytoddly — AI Agent Framework with Explicit Task Planning">
   <meta name="twitter:description" content="Plan first, execute second — with you in control throughout. Open-source Python AI agent that builds an editable task DAG before touching anything.">
   <meta name="twitter:image" content="https://cuddlytoddly.com/assets/og-image.png">
 
-  <!-- ═══════════════════════════════════════════════════
-       JSON-LD STRUCTURED DATA
-  ════════════════════════════════════════════════════ -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -46,30 +34,19 @@
     "name": "cuddlytoddly",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Linux, macOS, Windows",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "url": "https://cuddlytoddly.com/",
     "downloadUrl": "https://pypi.org/project/cuddlytoddly/",
     "codeRepository": "https://github.com/3IVIS/cuddlytoddly",
     "license": "https://opensource.org/licenses/MIT",
     "description": "cuddlytoddly is an open-source Python AI agent framework that builds an explicit, editable task graph before executing anything. Supports Claude, OpenAI, and local llama.cpp backends.",
-    "author": {
-      "@type": "Organization",
-      "name": "3IVIS",
-      "url": "https://github.com/3IVIS"
-    },
+    "author": { "@type": "Organization", "name": "3IVIS", "url": "https://github.com/3IVIS" },
     "programmingLanguage": "Python",
     "softwareRequirements": "Python 3.11+",
     "keywords": "AI agent, LLM planning, task graph, DAG, orchestration, Claude, OpenAI, llama.cpp"
   }
   </script>
 
-  <!-- ═══════════════════════════════════════════════════
-       FONTS & STYLES (unchanged from original)
-  ════════════════════════════════════════════════════ -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
@@ -77,21 +54,26 @@
 /* =========================================================
    cuddlytoddly — warm-technical editorial
    deep charcoal · warm amber · slate blue
+   
+   Palette revision — contrast audit fixes:
+     --muted  #7a7570 → #a09a94  (3.9→6.4:1 on bg)  ✅ AA
+     --dim    #45403c → #807a74  (1.7→4.2:1 on bg)  ✅ AA
+     --border rgba(255,255,255,0.07) → 0.10           ↑ card legibility
    ========================================================= */
 :root {
   --bg:          #18171a;
   --bg-alt:      #1c1b1f;
   --bg-card:     #222026;
   --bg-code:     #111013;
-  --border:      rgba(255,255,255,0.07);
+  --border:      rgba(255,255,255,0.10);   /* was 0.07 */
   --bwarm:       rgba(201,169,110,0.28);
   --amber:       #c9a96e;
   --amber-dim:   rgba(201,169,110,0.11);
   --blue:        #82b4c8;
   --green:       #7dba8c;
   --text:        #e8e2d9;
-  --muted:       #7a7570;
-  --dim:         #45403c;
+  --muted:       #a09a94;   /* was #7a7570 — lifted to 6.4:1 on --bg */
+  --dim:         #807a74;   /* was #45403c — lifted to 4.2:1 on --bg  */
   --serif:       'Lora', Georgia, serif;
   --mono:        'DM Mono', 'Fira Code', monospace;
   --sans:        'DM Sans', system-ui, sans-serif;
@@ -506,13 +488,12 @@ footer { padding: 2.25rem 2rem; }
 }
   </style>
 </head>
-  <!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-MG05YGHCS2"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-MG05YGHCS2');
 </script>
 
@@ -688,17 +669,14 @@ footer { padding: 2.25rem 2rem; }
             <div class="demo-screen-wrap" data-slideshow>
               <img
                 src="https://cuddlytoddly.com/runs/how_to_build_a_saas_business_webui.png"
-                alt="cuddlytoddly web UI showing a task DAG for 'How to build a SaaS business' — covering market research, product strategy, go-to-market, pricing, and launch sequencing"
-                loading="lazy"
-                width="420" height="210"
-                class="ds-active"
-                data-label="web ui"
+                alt="cuddlytoddly web UI showing a task DAG for 'How to build a SaaS business'"
+                loading="lazy" width="420" height="210"
+                class="ds-active" data-label="web ui"
               >
               <img
                 src="https://cuddlytoddly.com/runs/how_to_build_a_saas_business_terminal.png"
                 alt="cuddlytoddly terminal UI showing the same SaaS business plan executing step by step"
-                loading="lazy"
-                width="420" height="210"
+                loading="lazy" width="420" height="210"
                 data-label="terminal"
               >
             </div>
@@ -727,17 +705,14 @@ footer { padding: 2.25rem 2rem; }
             <div class="demo-screen-wrap" data-slideshow>
               <img
                 src="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise_webui.png"
-                alt="cuddlytoddly web UI showing a task DAG for 'How to negotiate a raise' — covering salary benchmarking, timing strategy, and negotiation scripts"
-                loading="lazy"
-                width="420" height="210"
-                class="ds-active"
-                data-label="web ui"
+                alt="cuddlytoddly web UI showing a task DAG for 'How to negotiate a raise'"
+                loading="lazy" width="420" height="210"
+                class="ds-active" data-label="web ui"
               >
               <img
                 src="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise_terminal.png"
-                alt="cuddlytoddly terminal UI showing the raise negotiation plan executing, with salary data fetched at runtime"
-                loading="lazy"
-                width="420" height="210"
+                alt="cuddlytoddly terminal UI showing the raise negotiation plan executing"
+                loading="lazy" width="420" height="210"
                 data-label="terminal"
               >
             </div>
@@ -996,7 +971,7 @@ footer { padding: 2.25rem 2rem; }
     </div>
   </section>
 
-  </main><!-- /main -->
+  </main>
 
   <!-- FOOTER -->
   <footer>
