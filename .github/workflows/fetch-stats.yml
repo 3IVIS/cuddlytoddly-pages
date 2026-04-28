@@ -26,6 +26,10 @@ jobs:
       - name: Fetch stats and write data.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # How old (in hours) a repo's data can be before we re-fetch it.
+          # Set lower (e.g. 1) for more frequent refreshes, higher to spread
+          # the load across many runs when you have a large repos.txt.
+          STALENESS_HOURS: '20'
         run: |
           node --input-type=module - << 'EOF'
           import fs from 'fs';
@@ -40,8 +44,11 @@ jobs:
           /**
            * Fetch a GitHub API URL.
            * Returns { ok: true, data } on success.
-           * Returns { ok: false, status, reason } on known HTTP errors — never throws.
-           * Retries up to `retries` times on network errors or 5xx responses.
+           * Returns { ok: false, status, reason, rateLimit? } on errors — never throws.
+           *
+           * Rate-limit responses (403/429) are returned immediately WITHOUT
+           * retrying, so the caller can decide to save progress and stop.
+           * Network errors and 5xx responses still retry up to `retries` times.
            */
           async function get(url, retries = 3) {
             const options = {
@@ -82,15 +89,21 @@ jobs:
                   return { ok: false, status: 404, reason: 'Not found — repo may have been deleted, renamed, or made private' };
                 }
 
+                // ── Rate limit: return immediately, no retry ──────────────
+                // The caller will detect rateLimit:true and stop the loop,
+                // preserving everything fetched so far.
                 if (statusCode === 403 || statusCode === 429) {
                   const resetEpoch = headers && headers['x-ratelimit-reset'];
-                  if (resetEpoch && attempt < retries) {
-                    const waitMs = Math.max((parseInt(resetEpoch) * 1000) - Date.now(), 0) + 2000;
-                    console.warn(`  ⚠ Rate limited. Waiting ${Math.ceil(waitMs / 1000)}s before retry ${attempt}/${retries}…`);
-                    await sleep(waitMs);
-                    continue;
-                  }
-                  return { ok: false, status: statusCode, reason: 'Rate limited — no reset header or retries exhausted' };
+                  const resetAt    = resetEpoch
+                    ? new Date(parseInt(resetEpoch) * 1000).toISOString()
+                    : 'unknown';
+                  return {
+                    ok:        false,
+                    status:    statusCode,
+                    reason:    `Rate limited — limit resets at ${resetAt}`,
+                    rateLimit: true,
+                    resetAt
+                  };
                 }
 
                 if (statusCode >= 500) {
@@ -131,9 +144,6 @@ jobs:
           }
 
           // ── validate manual tags ───────────────────────────────────────
-          //
-          // Tags must be lowercase alphanumeric words optionally joined by hyphens.
-          // Invalid tags are dropped with a warning rather than failing the whole run.
 
           function parseAndValidateTags(rawTagStr, slug) {
             if (!rawTagStr) return [];
@@ -158,34 +168,37 @@ jobs:
           function mergeTags(manualTags, githubTopics) {
             const seen   = new Set();
             const merged = [];
-            // Manual tags come first so they appear at the front
             for (const t of [...manualTags, ...githubTopics]) {
               if (!seen.has(t)) { seen.add(t); merged.push(t); }
             }
             return merged;
           }
 
-          // ── load previous data.json as fallback ────────────────────────
+          // ── load previous data.json ────────────────────────────────────
+          //
+          // We build a map of slug → entry so we can:
+          //   1. Skip repos whose data is still fresh (fetched recently).
+          //   2. Fall back to stale-but-good data for repos that fail this run.
 
-          let previousData = null;
+          const STALENESS_MS = (parseInt(process.env.STALENESS_HOURS || '20', 10)) * 60 * 60 * 1000;
+
+          let previousMeta = null;   // top-level fields from last run
+          const existingMap = {};    // slug (lower-cased) → framework entry
+
           try {
             const prev = JSON.parse(fs.readFileSync('data.json', 'utf8'));
             if (prev.frameworks && prev.frameworks.length > 0) {
-              previousData = prev;
-              console.log(`Found previous data.json — ${previousData.frameworks.length} frameworks from ${previousData.fetchedAt}`);
+              previousMeta = { fetchedAt: prev.fetchedAt, count: prev.count };
+              for (const fw of prev.frameworks) {
+                existingMap[fw.fullName.toLowerCase()] = fw;
+              }
+              console.log(`Loaded previous data.json — ${prev.frameworks.length} frameworks from ${prev.fetchedAt}`);
             }
           } catch (_) {
             console.log('No usable previous data.json — starting fresh');
           }
 
           // ── parse repos.txt ────────────────────────────────────────────
-          //
-          // Line format:  owner/repo  [tag1,tag2,tag3]
-          //
-          //   • Fields are split on whitespace
-          //   • Field 1 : slug (required)
-          //   • Field 2 : manual tags, comma-separated (optional)
-          //   • Anything further is ignored
 
           const rawFile = fs.readFileSync('repos.txt', 'utf8');
           const lines   = rawFile
@@ -194,12 +207,12 @@ jobs:
             .filter(l => l && !l.startsWith('#'));
 
           const invalidEntries = [];
-          const entries        = [];   // [{ slug, manualTags }]
+          const entries        = [];
 
           for (const line of lines) {
             const parts      = line.split(/\s+/);
             const slug       = parts[0];
-            const rawTags    = parts[1] || '';          // second field, may be absent
+            const rawTags    = parts[1] || '';
             const slugError  = validateSlug(slug);
 
             if (slugError) {
@@ -213,127 +226,241 @@ jobs:
           }
 
           // Deduplicate slugs
-          const seen     = new Set();
-          const dupeSkip = [];
-          const unique   = entries.filter(({ slug }) => {
-            if (seen.has(slug)) { dupeSkip.push(slug); return false; }
-            seen.add(slug);
+          const seenSlugs = new Set();
+          const dupeSkip  = [];
+          const unique    = entries.filter(({ slug }) => {
+            const key = slug.toLowerCase();
+            if (seenSlugs.has(key)) { dupeSkip.push(slug); return false; }
+            seenSlugs.add(key);
             return true;
           });
           if (dupeSkip.length > 0) {
             console.warn(`  ⚠ Skipping ${dupeSkip.length} duplicate(s): ${dupeSkip.join(', ')}`);
           }
 
-          console.log(`\nParsed ${unique.length} repos from repos.txt`);
-          const withTags = unique.filter(e => e.manualTags.length > 0);
-          if (withTags.length > 0) {
-            console.log(`  ${withTags.length} repo(s) have manual tags:`);
-            withTags.forEach(e => console.log(`    ${e.slug}  →  ${e.manualTags.join(', ')}`));
+          // ── decide which repos need fetching ───────────────────────────
+          //
+          // A repo is "fresh" if it has a lastFetchedAt timestamp that is
+          // within STALENESS_MS.  Fresh repos are carried forward as-is;
+          // only stale / never-seen repos are hit against the API.
+
+          const now      = Date.now();
+          const toFetch  = [];
+          const carried  = [];  // fresh entries kept from previous run
+
+          for (const entry of unique) {
+            const existing = existingMap[entry.slug.toLowerCase()];
+            if (existing && existing.lastFetchedAt) {
+              const age = now - new Date(existing.lastFetchedAt).getTime();
+              if (age < STALENESS_MS) {
+                carried.push(existing);
+                continue;
+              }
+            }
+            toFetch.push(entry);
           }
-          console.log(`\nFetching…\n`);
+
+          console.log(`\nParsed ${unique.length} repos from repos.txt`);
+          console.log(`  ✓ Fresh (skipping)  : ${carried.length}`);
+          console.log(`  ↻ Stale (fetching)  : ${toFetch.length}`);
+          if (toFetch.length === 0) {
+            console.log('\nAll repos are fresh — nothing to fetch.');
+          } else {
+            const withTags = toFetch.filter(e => e.manualTags.length > 0);
+            if (withTags.length > 0) {
+              console.log(`  ${withTags.length} repo(s) have manual tags:`);
+              withTags.forEach(e => console.log(`    ${e.slug}  →  ${e.manualTags.join(', ')}`));
+            }
+            console.log(`\nFetching…\n`);
+          }
 
           // ── fetch ──────────────────────────────────────────────────────
+          //
+          // On rate-limit we stop immediately rather than failing loudly.
+          // Repos not yet reached are carried forward from existing data
+          // (or omitted if they have no previous data at all).
+          // The next manual / scheduled run will pick them up because they
+          // will still be stale.
 
-          const results  = [];
-          const failures = [...invalidEntries];
+          const freshlyFetched = [];
+          const failures       = [...invalidEntries];
+          let   rateLimitedAt  = null;
 
-          for (const { slug, manualTags } of unique) {
+          for (const { slug, manualTags } of toFetch) {
+            // ── already hit the rate limit: carry forward or skip ────────
+            if (rateLimitedAt !== null) {
+              const existing = existingMap[slug.toLowerCase()];
+              if (existing) {
+                // Keep the stale entry — it will be re-fetched next run
+                freshlyFetched.push(existing);
+                failures.push({
+                  slug,
+                  reason: `Skipped — rate limited before this repo was reached (limit hit at ${rateLimitedAt})`,
+                  status: 'skipped-rate-limit'
+                });
+              } else {
+                failures.push({
+                  slug,
+                  reason: `Not fetched — rate limited before this repo was reached and no previous data exists`,
+                  status: 'skipped-rate-limit'
+                });
+              }
+              continue;
+            }
+
             process.stdout.write(`  ${slug} … `);
 
             const repoRes = await get(`https://api.github.com/repos/${slug}`);
 
+            // ── rate limit hit ───────────────────────────────────────────
+            if (repoRes.rateLimit) {
+              rateLimitedAt = new Date().toISOString();
+              console.log(`⚠ RATE LIMITED — stopping fetch loop`);
+              const existing = existingMap[slug.toLowerCase()];
+              if (existing) {
+                freshlyFetched.push(existing);
+                failures.push({ slug, reason: repoRes.reason, status: repoRes.status });
+              } else {
+                failures.push({ slug, reason: repoRes.reason, status: repoRes.status });
+              }
+              await sleep(300);
+              continue;
+            }
+
+            // ── other error ──────────────────────────────────────────────
             if (!repoRes.ok) {
               console.log(`✗ ${repoRes.reason}`);
+              // Fall back to previous data rather than dropping the repo entirely
+              const existing = existingMap[slug.toLowerCase()];
+              if (existing) {
+                console.log(`    ↩ Keeping previous data for ${slug} (last fetched ${existing.lastFetchedAt ?? 'unknown'})`);
+                freshlyFetched.push(existing);
+              }
               failures.push({ slug, reason: repoRes.reason, status: repoRes.status });
               await sleep(300);
               continue;
             }
 
-            // Topics — non-fatal if this fails
+            // ── topics (non-fatal) ───────────────────────────────────────
             const topicsRes    = await get(`https://api.github.com/repos/${slug}/topics`);
             const githubTopics = topicsRes.ok ? (topicsRes.data.names || []) : [];
             if (!topicsRes.ok) {
-              console.log(`⚠ fetched repo (topics unavailable: ${topicsRes.reason})`);
+              if (topicsRes.rateLimit) {
+                rateLimitedAt = new Date().toISOString();
+                console.log(`⚠ RATE LIMITED on topics — stopping fetch loop`);
+              } else {
+                console.log(`⚠ fetched repo (topics unavailable: ${topicsRes.reason})`);
+              }
             } else {
               console.log(`✓ ${repoRes.data.stargazers_count.toLocaleString()} ★`);
             }
 
-            // Merge manual tags with GitHub topics
             const allTags = mergeTags(manualTags, githubTopics);
+            const d       = repoRes.data;
 
-            const d = repoRes.data;
-            results.push({
-              name:        d.name,
-              fullName:    d.full_name,
-              description: d.description  || '',
-              url:         d.html_url,
-              stars:       d.stargazers_count,
-              forks:       d.forks_count,
-              openIssues:  d.open_issues_count,
-              watchers:    d.watchers_count,
-              language:    d.language      || 'Unknown',
-              license:     d.license       ? d.license.spdx_id : 'None',
-              manualTags,                         // stored separately so you can see the source
-              githubTopics,                       // raw GitHub topics, also stored separately
-              topics:      allTags,               // merged list used by the UI
-              updatedAt:   d.updated_at,
-              pushedAt:    d.pushed_at,
-              archived:    d.archived      || false,
-              homepage:    d.homepage      || ''
+            freshlyFetched.push({
+              name:           d.name,
+              fullName:       d.full_name,
+              description:    d.description  || '',
+              url:            d.html_url,
+              stars:          d.stargazers_count,
+              forks:          d.forks_count,
+              openIssues:     d.open_issues_count,
+              watchers:       d.watchers_count,
+              language:       d.language      || 'Unknown',
+              license:        d.license       ? d.license.spdx_id : 'None',
+              manualTags,
+              githubTopics,
+              topics:         allTags,
+              updatedAt:      d.updated_at,
+              pushedAt:       d.pushed_at,
+              archived:       d.archived      || false,
+              homepage:       d.homepage      || '',
+              lastFetchedAt:  new Date().toISOString()   // ← resume checkpoint
             });
 
             await sleep(250);
           }
 
+          // ── merge results ──────────────────────────────────────────────
+          //
+          // Final list = carried-forward fresh entries + everything from
+          // this run (fetched or fallen-back-to-stale).
+          // We deduplicate by fullName to avoid any double-entries.
+
+          const allResults   = [...carried, ...freshlyFetched];
+          const seenFullName = new Set();
+          const results      = allResults.filter(fw => {
+            const key = fw.fullName.toLowerCase();
+            if (seenFullName.has(key)) return false;
+            seenFullName.add(key);
+            return true;
+          });
+
           // ── summary ────────────────────────────────────────────────────
 
+          const fetchedCount  = freshlyFetched.filter(fw => fw.lastFetchedAt && new Date(fw.lastFetchedAt).getTime() > now).length;
+          const hardFailures  = failures.filter(f => f.status !== 'invalid-format' && f.status !== 'skipped-rate-limit');
+
           console.log('\n── Fetch Summary ──────────────────────────────────────────');
-          console.log(`  ✓ Succeeded : ${results.length}`);
-          console.log(`  ✗ Failed    : ${failures.length}`);
-          if (failures.length > 0) {
-            failures.forEach(f => console.log(`      • ${f.slug}  →  ${f.reason}`));
+          console.log(`  ✓ Freshly fetched : ${toFetch.length - failures.filter(f => f.status !== 'skipped-rate-limit').length}`);
+          console.log(`  ↩ Carried forward : ${carried.length + freshlyFetched.filter(fw => existingMap[fw.fullName.toLowerCase()] === fw).length}`);
+          console.log(`  ✗ Hard failures   : ${hardFailures.length}`);
+          if (rateLimitedAt) {
+            const skipped = failures.filter(f => f.status === 'skipped-rate-limit').length;
+            console.log(`  ⚠ Rate limited    : yes (hit at ${rateLimitedAt}) — ${skipped} repo(s) deferred to next run`);
           }
+          if (hardFailures.length > 0) {
+            hardFailures.forEach(f => console.log(`      • ${f.slug}  →  ${f.reason}`));
+          }
+          console.log(`  ━ Total in output : ${results.length}`);
 
           // ── guard: never overwrite good data with zero results ─────────
 
           if (results.length === 0) {
-            console.error('\n✗ CRITICAL: Zero repos fetched successfully.');
-            if (previousData) {
-              console.error('  Preserving previous data.json to avoid data loss.');
-              fs.writeFileSync('data.json', JSON.stringify({
-                ...previousData,
-                lastAttemptAt:    new Date().toISOString(),
-                lastAttemptError: 'All fetches failed — data preserved from previous run',
-                fetchErrors:      failures
-              }, null, 2));
-            } else {
-              console.error('  No previous data to fall back to — data.json left unchanged.');
-            }
+            console.error('\n✗ CRITICAL: Zero repos in output — refusing to overwrite data.json');
             process.exit(1);
           }
 
-          // ── warn if failure rate is high ───────────────────────────────
+          // ── warn if hard-failure rate is high ──────────────────────────
 
-          const hardFailures = failures.filter(f => f.status !== 'invalid-format').length;
-          const failRate     = hardFailures / Math.max(unique.length, 1);
-          if (failRate > 0.25) {
-            console.warn(`\n⚠ WARNING: ${Math.round(failRate * 100)}% of repos failed — check rate limits or stale repos.txt entries`);
+          const hardFailRate = hardFailures.length / Math.max(unique.length, 1);
+          if (hardFailRate > 0.25) {
+            console.warn(`\n⚠ WARNING: ${Math.round(hardFailRate * 100)}% of repos had hard failures — check stale repos.txt entries`);
           }
 
           // ── write data.json ────────────────────────────────────────────
 
+          const isPartial = rateLimitedAt !== null;
+
           const output = {
             fetchedAt:  new Date().toISOString(),
             count:      results.length,
-            frameworks: results,
+            // Flag lets the UI / consumers know this run did not cover all repos
+            ...(isPartial && {
+              partial:       true,
+              partialReason: `Rate limited at ${rateLimitedAt} — remaining repos deferred to next run`
+            }),
+            frameworks:  results,
             ...(failures.length > 0 && { fetchErrors: failures })
           };
 
           fs.writeFileSync('data.json', JSON.stringify(output, null, 2));
-          console.log(`\n✓ Wrote data.json with ${results.length} frameworks`);
+          console.log(`\n✓ Wrote data.json with ${results.length} frameworks${isPartial ? ' (partial run)' : ''}`);
 
-          if (failures.length > 0) {
-            console.error(`\n⚠ ${failures.length} repo(s) could not be fetched (see above). Fix repos.txt and re-run.`);
+          // ── exit codes ─────────────────────────────────────────────────
+          //
+          //   0 — full success, or graceful partial run (rate limited)
+          //   1 — zero results (catastrophic, don't overwrite)
+          //   2 — hard fetch failures for some repos (data saved, but degraded)
+
+          if (isPartial) {
+            console.log('\n⚠ Run ended early due to rate limiting. Re-run manually or wait for the next schedule to fetch the remaining repos.');
+            process.exit(0);   // graceful — data is intact
+          }
+
+          if (hardFailures.length > 0) {
+            console.error(`\n⚠ ${hardFailures.length} repo(s) could not be fetched (see above). Fix repos.txt and re-run.`);
             process.exit(2);
           }
           EOF
