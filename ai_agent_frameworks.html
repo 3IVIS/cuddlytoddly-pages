@@ -283,11 +283,16 @@ table {
   margin-top: .875rem; min-width: 860px;
 }
 
-/* header row */
+/* header row
+   FIX: border-bottom replaced with box-shadow so the separator line
+   travels with the sticky element instead of being clipped by the
+   table's border-collapse model (which assigns the shared border to
+   the first tbody row, causing it to scroll away and leave the sticky
+   header visually overlapping the first data row).                    */
 thead th {
   position: sticky; top: 57px; z-index: 10;
   background: var(--bg);
-  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 var(--border);   /* ← was: border-bottom: 1px solid var(--border) */
   padding: .6rem 1rem;
   text-align: left;
   font-family: var(--mono); font-size: .65rem;
