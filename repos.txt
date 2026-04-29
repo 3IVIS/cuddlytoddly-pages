@@ -8,7 +8,7 @@ langchain-ai/langgraph              orchestration,stateful,graph,popular
 pydantic/pydantic-ai                type-safe,structured
 agno-agi/agno                       memory,multimodal
 stanfordnlp/dspy                    research,optimisation
-PrefectHQ/ControlFlow               declarative,workflow
+prefect-archive/ControlFlow         declarative,workflow
 flux0-ai/flux0                      orchestration,deployment,stateful
 Pipelex/pipelex                     declarative,workflow,orchestration
 
@@ -19,11 +19,10 @@ openai/swarm                        multi-agent,openai,experimental
 openai/openai-agents-python         multi-agent,openai,workflow
 VRSEN/agency-swarm                  multi-agent,orchestration
 camel-ai/camel                      multi-agent,research,simulation
-geekan/MetaGPT                      multi-agent,code-gen,popular
+FoundationAgents/MetaGPT            multi-agent,code-gen,popular
 agentuniverse-ai/agentUniverse      multi-agent,enterprise
 langroid/langroid                   multi-agent,message-passing
 OpenAgentsInc/openagents            multi-agent,platform
-OpenBML/AgentVerse                  multi-agent,simulation
 LazyAGI/LazyLLM                     multi-agent,lightweight
 InternLM/MindSearch                 multi-agent,search
 TauricResearch/TradingAgents        multi-agent,finance
@@ -35,7 +34,6 @@ patched-codes/patchwork             multi-agent,enterprise
 
 # ─── Swarm / Collective Intelligence ──────────────────────────────────
 kyegomez/swarms                     multi-agent,swarm,popular
-autoreason/swarm                    multi-agent,lightweight
 FelipeDaza7/swarm-tools             multi-agent,learning
 ruvnet/ruflo                        multi-agent,platform
 The-Swarm-Corporation/swarms-rs     multi-agent,rust
@@ -60,7 +58,7 @@ yoheinakajima/babyagi               autonomous,pioneer,task-management
 reworkd/AgentGPT                    autonomous,web,popular
 
 # ─── Code Generation / Execution ──────────────────────────────────────
-gpt-engineer-org/gpt-engineer       code-gen,developer,popular
+AntonOsika/gpt-engineer             code-gen,developer,popular
 OpenInterpreter/open-interpreter    code-execution,local,developer,popular
 
 # ─── Microsoft ────────────────────────────────────────────────────────
@@ -74,11 +72,11 @@ letta-ai/letta                      memory,stateful,persistence
 
 # ─── Infrastructure & Tooling (Agent-Focused Only) ────────────────────
 TransformerOptimus/SuperAGI         infrastructure,autonomous,gui
-phidatahq/phidata                   memory,knowledge,database
+agno-agi/agno                       memory,knowledge,database
 ComposioHQ/composio                 tools,integrations,actions
 huggingface/smolagents              lightweight,huggingface,minimal
 BrainBlend-AI/atomic-agents         modular,predictable,minimal
-i-am-bee/bee-agent-framework        ibm,production
+i-am-bee/beeai-framework            ibm,production
 
 # ─── Research / Experimental Frameworks ───────────────────────────────
 OpenBMB/ToolBench                   research,tools,benchmark
@@ -87,5 +85,5 @@ HKUDS/AutoAgent                     research,zero-code,automated
 
 # ─── Platform / Cloud ─────────────────────────────────────────────────
 dataelement/bisheng                 enterprise,knowledge-base,chinese
-meta-llama/llama-stack              meta,inference,safety
+ogx-ai/ogx                          meta,inference,safety
 GoogleCloudPlatform/generative-ai   google,cloud,enterprise
