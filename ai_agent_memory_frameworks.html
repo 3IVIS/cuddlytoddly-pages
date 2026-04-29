@@ -182,7 +182,7 @@ table {
   border-collapse: separate;
   border-spacing: 0;
   margin-top: .875rem;
-  min-width: 980px;
+  min-width: 1100px;
 }
 
 thead th {
@@ -266,6 +266,23 @@ tbody td {
 .mem-class { font-size: .8rem; color: var(--muted); line-height: 1.5; }
 .arch-val  { font-family: var(--mono); font-size: .72rem; color: var(--dim); line-height: 1.5; }
 
+/* ── STARS ── */
+.stars-val { display: flex; align-items: center; gap: .45rem; font-family: var(--mono); font-size: .82rem; color: var(--text); font-weight: 500; }
+.star-glyph { color: var(--amber); font-size: .8rem; }
+.stars-bar-wrap { margin-top: .3rem; height: 2px; background: var(--border); border-radius: 2px; max-width: 72px; }
+.stars-bar { height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--amber), #e8c990); }
+.forks-val { font-family: var(--mono); font-size: .75rem; color: var(--dim); }
+
+/* ── TOPIC CHIPS ── */
+.chip-list { display: flex; flex-wrap: wrap; gap: .3rem; }
+.chip {
+  display: inline-block; padding: .15rem .55rem; border-radius: 3px;
+  font-family: var(--mono); font-size: .65rem; letter-spacing: .04em;
+  border: 1px solid var(--border); color: var(--dim); background: var(--bg-card);
+  cursor: pointer; transition: border-color .14s, color .14s, background .14s;
+}
+.chip:hover, .chip.active { border-color: rgba(130,180,200,.4); color: var(--blue); background: rgba(130,180,200,.08); }
+
 /* ── EMPTY ── */
 .empty-state { text-align: center; padding: 5rem 1rem; color: var(--muted); }
 .empty-state .icon { font-family: var(--serif); font-size: 2rem; color: var(--dim); margin-bottom: .875rem; display: block; }
@@ -340,6 +357,8 @@ footer { border-top: 1px solid var(--border); padding: 2rem; }
       <div class="hero-stats">
         <div class="hero-stat"><span class="hero-stat-val" id="total-count">—</span><span class="hero-stat-lbl">Frameworks</span></div>
         <div class="stat-divider"></div>
+        <div class="hero-stat"><span class="hero-stat-val" id="total-stars">—</span><span class="hero-stat-lbl">Total Stars</span></div>
+        <div class="stat-divider"></div>
         <div class="hero-stat"><span class="hero-stat-val" id="total-production">—</span><span class="hero-stat-lbl">Production-ready</span></div>
         <div class="stat-divider"></div>
         <div class="hero-stat"><span class="hero-stat-val" id="total-layers">—</span><span class="hero-stat-lbl">Layers</span></div>
@@ -381,11 +400,13 @@ footer { border-top: 1px solid var(--border); padding: 2rem; }
       <thead>
         <tr>
           <th onclick="setSort('name')"       id="th-name">      <div class="th-inner">Framework     <span class="sort-icon asc"  id="si-name"></span></div></th>
+          <th onclick="setSort('stars')"      id="th-stars">     <div class="th-inner">Stars         <span class="sort-icon none" id="si-stars"></span></div></th>
           <th onclick="setSort('layer')"      id="th-layer">     <div class="th-inner">Layer         <span class="sort-icon none" id="si-layer"></span></div></th>
           <th onclick="setSort('memoryClass')"id="th-memoryClass"><div class="th-inner">Memory Class  <span class="sort-icon none" id="si-memoryClass"></span></div></th>
           <th onclick="setSort('architecture')"id="th-architecture"><div class="th-inner">Architecture<span class="sort-icon none" id="si-architecture"></span></div></th>
           <th onclick="setSort('license')"    id="th-license">   <div class="th-inner">License       <span class="sort-icon none" id="si-license"></span></div></th>
           <th onclick="setSort('maturity')"   id="th-maturity">  <div class="th-inner">Maturity      <span class="sort-icon none" id="si-maturity"></span></div></th>
+          <th>Topics</th>
         </tr>
       </thead>
       <tbody id="table-body"></tbody>
@@ -408,9 +429,13 @@ footer { border-top: 1px solid var(--border); padding: 2rem; }
 
 <script>
 let FRAMEWORKS = [];
+let maxStars   = 1;
 
 const MATURITY_ORDER = { Production: 0, Emerging: 1, Research: 2, Experimental: 3 };
-const state = { search: '', layers: new Set(), maturities: new Set(), sort: { col: 'name', dir: 'asc' } };
+const state = { search: '', layers: new Set(), maturities: new Set(), topics: new Set(), sort: { col: 'stars', dir: 'desc' } };
+
+function fmt(n) { if (n >= 1000) return (n/1000).toFixed(n >= 10000 ? 0 : 1) + 'k'; return String(n); }
+function fmtBig(n) { if (n >= 1e6) return (n/1e6).toFixed(1)+'M'; if (n >= 1e3) return Math.round(n/1e3)+'k'; return String(n); }
 
 function setProgress(pct, msg) {
   document.getElementById('loader-bar').style.width    = pct + '%';
@@ -428,9 +453,10 @@ function getAllMaturities(){ return ['Production','Emerging','Research','Experim
 function filtered() {
   return FRAMEWORKS.filter(f => {
     const q = state.search.toLowerCase();
-    if (q && ![f.name, f.memoryClass, f.architecture, f.layer, f.maturity, f.license].join(' ').toLowerCase().includes(q)) return false;
+    if (q && ![f.name, f.memoryClass, f.architecture, f.layer, f.maturity, f.license, ...(f.topics||[])].join(' ').toLowerCase().includes(q)) return false;
     if (state.layers.size     > 0 && !state.layers.has(f.layer))        return false;
     if (state.maturities.size > 0 && !state.maturities.has(f.maturity)) return false;
+    if (state.topics.size     > 0 && !(f.topics||[]).some(t => state.topics.has(t))) return false;
     return true;
   });
 }
@@ -440,6 +466,10 @@ function sorted(arr) {
   return [...arr].sort((a, b) => {
     if (col === 'maturity') {
       const r = (MATURITY_ORDER[a.maturity] ?? 9) - (MATURITY_ORDER[b.maturity] ?? 9);
+      return dir === 'asc' ? r : -r;
+    }
+    if (col === 'stars' || col === 'forks') {
+      const r = (a[col] ?? 0) - (b[col] ?? 0);
       return dir === 'asc' ? r : -r;
     }
     const va = (a[col] ?? '').toString();
@@ -462,7 +492,14 @@ function renderTable() {
     </div></td></tr>`;
     return;
   }
-  tbody.innerHTML = rows.map((f, i) => `
+  const mx = maxStars || 1;
+  tbody.innerHTML = rows.map((f, i) => {
+    const pct   = Math.round(((f.stars || 0) / mx) * 100);
+    const chips = (f.topics || []).map(t => {
+      const a = state.topics && state.topics.has(t) ? ' active' : '';
+      return `<span class="chip${a}" onclick="toggleTopic('${t}')">${t}</span>`;
+    }).join('');
+    return `
     <tr style="animation-delay:${i * .016}s">
       <td>
         <a class="fw-name-link" href="${f.url}" target="_blank" rel="noopener">
@@ -470,12 +507,18 @@ function renderTable() {
         </a>
         ${f.description ? `<div class="fw-sub">${f.description}</div>` : ''}
       </td>
+      <td>
+        ${f.stars != null ? `<div class="stars-val"><span class="star-glyph">★</span>${fmt(f.stars)}</div>
+        <div class="stars-bar-wrap"><div class="stars-bar" style="width:${pct}%"></div></div>` : '<span class="forks-val">—</span>'}
+      </td>
       <td><span class="layer-badge layer-${f.layer}">${f.layer}</span></td>
       <td><div class="mem-class">${f.memoryClass || '—'}</div></td>
       <td><div class="arch-val">${f.architecture || '—'}</div></td>
       <td><span class="license-badge">${f.license || '—'}</span></td>
       <td><span class="maturity-badge mat-${f.maturity}">${f.maturity || '—'}</span></td>
-    </tr>`).join('');
+      <td><div class="chip-list">${chips || '<span style="font-family:var(--mono);font-size:.65rem;color:var(--dim)">—</span>'}</div></td>
+    </tr>`;
+  }).join('');
 }
 
 function renderFilters() {
@@ -490,7 +533,7 @@ function renderFilters() {
 }
 
 function renderHeaders() {
-  ['name','layer','memoryClass','architecture','license','maturity'].forEach(col => {
+  ['name','stars','layer','memoryClass','architecture','license','maturity'].forEach(col => {
     const si = document.getElementById('si-' + col);
     const th = document.getElementById('th-' + col);
     if (!si || !th) return;
@@ -504,6 +547,8 @@ function renderStats() {
   document.getElementById('total-production').textContent = FRAMEWORKS.filter(f => f.maturity === 'Production').length;
   document.getElementById('total-layers').textContent     = getAllLayers().length;
   document.getElementById('total-archs').textContent      = new Set(FRAMEWORKS.map(f => f.architecture).filter(Boolean)).size;
+  const starsEl = document.getElementById('total-stars');
+  if (starsEl) starsEl.textContent = fmtBig(FRAMEWORKS.reduce((s,f) => s + (f.stars||0), 0));
 }
 
 function render() { renderTable(); renderFilters(); renderHeaders(); }
@@ -515,8 +560,9 @@ function setSort(col) {
 }
 function toggleLayer(l)    { state.layers.has(l)     ? state.layers.delete(l)     : state.layers.add(l);     render(); }
 function toggleMaturity(m) { state.maturities.has(m) ? state.maturities.delete(m) : state.maturities.add(m); render(); }
+function toggleTopic(t)    { state.topics.has(t)     ? state.topics.delete(t)     : state.topics.add(t);     render(); }
 function clearFilters() {
-  state.search = ''; state.layers.clear(); state.maturities.clear();
+  state.search = ''; state.layers.clear(); state.maturities.clear(); state.topics.clear();
   document.getElementById('search').value = ''; render();
 }
 document.getElementById('search').addEventListener('input', e => { state.search = e.target.value; render(); });
@@ -531,6 +577,7 @@ async function loadData() {
     if (!json.frameworks || !json.frameworks.length)
       throw new Error('memory-data.json is empty — trigger the GitHub Actions workflow from the Actions tab first');
     FRAMEWORKS = json.frameworks;
+    maxStars   = Math.max(...FRAMEWORKS.map(f => f.stars || 0), 1);
     setProgress(100, `Loaded ${FRAMEWORKS.length} frameworks`);
     renderStats();
     render();
