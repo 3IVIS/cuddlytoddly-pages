@@ -247,22 +247,29 @@ jobs:
               slug,
               name:          d.name,
               fullName:      d.full_name,
-              description:   d.description  || '',
+              description:   d.description        || '',
               url:           d.html_url,
               stars:         d.stargazers_count,
               forks:         d.forks_count,
-              language:      d.language     || 'Unknown',
+              openIssues:    d.open_issues_count,
+              watchers:      d.watchers_count,
+              language:      d.language            || 'Unknown',
+              // GitHub license takes precedence; fall back to static value for
+              // non-SPDX licenses (e.g. "Mixed", "Open core", "Proprietary")
+              license:       (d.license && d.license.spdx_id && d.license.spdx_id !== 'NOASSERTION')
+                               ? d.license.spdx_id
+                               : (license || 'None'),
+              homepage:      d.homepage            || '',
+              archived:      d.archived            || false,
+              updatedAt:     d.updated_at,
+              pushedAt:      d.pushed_at,
               // Static metadata from memory-repos.txt
               layer,
               memoryClass,
               architecture,
-              license:       license || (d.license ? d.license.spdx_id : 'None'),
               maturity,
-              // GitHub extras
+              // GitHub topics
               topics:        githubTopics,
-              archived:      d.archived     || false,
-              updatedAt:     d.updated_at,
-              pushedAt:      d.pushed_at,
               lastFetchedAt: new Date().toISOString()
             });
 
