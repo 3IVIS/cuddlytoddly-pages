@@ -22,3 +22,8 @@ https://github.com/MemTensor/MemOS                 | Infra     | Both (shared sy
 https://github.com/MehulG/memX                     | Infra     | Personalization + infra              | Local-first (DB-style)                | MIT         | Emerging
 https://github.com/chroma-core/chroma              | Infra     | None (storage layer)                 | Vector database                       | Apache 2.0  | Production
 https://github.com/MemTensor/MemFactory            | Research  | Both                                 | RL-driven modular (GRPO)              | Apache 2.0  | Research
+https://github.com/dolthub/dolt                    | Infra     | Both                                 | Version-controlled relational DB      | Apache 2.0  | Production
+https://github.com/vstorm-co/memv                  | Framework | Both                                 | Bi-temporal + delta-based memory      | MIT         | Experimental
+https://github.com/raia-live/amfs                  | Framework | Both                                 | Versioned + feedback-driven memory    | Unknown     | Emerging
+https://memstate.ai                                | Platform  | Both                                 | Versioned state memory (fact-based)   | Proprietary | Emerging
+https://github.com/EverMind-AI/EverOS              | Framework | Multi-type taxonomy                  | MongoDB + ES + Milvus + Redis         | None        | Emerging
