@@ -192,22 +192,37 @@ input[type="text"]:focus { border-color: var(--bwarm); }
 
 /* ── TABLE ── */
 .table-section { max-width: var(--max); margin: 0 auto; padding: 0 2rem 5rem; }
-.table-wrap { overflow-x: auto; }
+.table-wrap {
+  /*
+   * FIX: overflow-x:clip instead of overflow-x:auto.
+   *
+   * overflow:auto/scroll/hidden all create a new block formatting context
+   * (BFC). Firefox enforces the spec strictly: a sticky-positioned descendant
+   * is contained by the nearest scrolling ancestor, so position:sticky on
+   * <thead th> is treated as relative inside an overflow:auto wrapper —
+   * the header stays at its natural position and paints over the first row.
+   *
+   * overflow:clip performs the same visual cropping WITHOUT creating a BFC
+   * (spec §overflow-clip), so the sticky context continues up to the
+   * viewport (or the next true scroll container), and the header sticks
+   * correctly in every browser including Firefox 126+.
+   *
+   * Horizontal scrolling still works because overflow-x:clip clips content
+   * that overflows without adding a scrollbar; the page's own horizontal
+   * scroll handles any overflow if needed. If a scrollbar is explicitly
+   * required, pair it with a thin sentinel div and JS, or accept the
+   * trade-off and use overflow-x:auto while removing thead sticky.
+   */
+  overflow-x: clip;
+}
 
 table {
   width: 100%;
   /*
-   * FIX: border-collapse:separate + border-spacing:0 is the only reliable
-   * cross-browser solution for sticky thead with visible separators.
-   *
-   * With border-collapse:collapse the browser merges the thead/tbody boundary
-   * into a single "shared" border that it assigns to the first <tbody> row —
-   * not to the <th>. That border therefore scrolls away with the row, leaving
-   * the sticky header flush against the row below it (the "blocking" effect).
-   *
-   * With border-collapse:separate every cell owns its own borders, so the
-   * border-bottom on <th> is painted as part of the sticky element and
-   * travels with it correctly. border-spacing:0 collapses the cell gaps.
+   * border-collapse:separate + border-spacing:0 keeps each <th> border
+   * painted as part of the sticky element, so the bottom separator travels
+   * with the header on scroll (border-collapse:collapse assigns the shared
+   * border to the first tbody row instead, making it scroll away).
    */
   border-collapse: separate;
   border-spacing: 0;
@@ -217,11 +232,7 @@ table {
 
 thead th {
   position: sticky;
-  top: 57px;
-  /*
-   * z-index must be high enough to clear tbody rows that temporarily
-   * form stacking contexts via the rowIn animation (opacity/transform).
-   */
+  top: 57px; /* nav height */
   z-index: 100;
   background: var(--bg);
   border-bottom: 1px solid var(--border);
@@ -256,7 +267,6 @@ tbody td {
   padding: .9rem 1rem;
   vertical-align: middle;
   font-size: .875rem;
-  /* border moved to td (required with border-collapse:separate) */
   border-bottom: 1px solid var(--border);
 }
 
