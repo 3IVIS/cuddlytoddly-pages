@@ -8,21 +8,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
-/* =========================================================
-   AI Agent Frameworks Observatory
-   warm-technical editorial · deep charcoal · amber · slate
-
-   Palette revision — contrast audit fixes:
-     --muted  #7a7570 → #a09a94  (3.9→6.4:1 on bg)  ✅ AA
-     --dim    #45403c → #807a74  (1.7→4.2:1 on bg)  ✅ AA
-     --border rgba(255,255,255,0.07) → 0.10           ↑ card legibility
-   ========================================================= */
 :root {
   --bg:        #18171a;
   --bg-alt:    #1c1b1f;
   --bg-card:   #222026;
   --bg-code:   #111013;
-  --border:    rgba(255,255,255,0.10);   /* was 0.07 */
+  --border:    rgba(255,255,255,0.10);
   --bwarm:     rgba(201,169,110,0.28);
   --amber:     #c9a96e;
   --amber-dim: rgba(201,169,110,0.11);
@@ -30,8 +21,8 @@
   --green:     #7dba8c;
   --red:       #c87d7d;
   --text:      #e8e2d9;
-  --muted:     #a09a94;   /* was #7a7570 — lifted to 6.4:1 on --bg */
-  --dim:       #807a74;   /* was #45403c — lifted to 4.2:1 on --bg  */
+  --muted:     #a09a94;
+  --dim:       #807a74;
   --serif:     'Lora', Georgia, serif;
   --mono:      'DM Mono', 'Fira Code', monospace;
   --sans:      'DM Sans', system-ui, sans-serif;
@@ -52,7 +43,6 @@ body {
   overflow-x: hidden;
 }
 
-/* noise texture overlay */
 body::before {
   content: '';
   pointer-events: none;
@@ -78,7 +68,6 @@ code { font-family: var(--mono); font-size: .85em; color: var(--amber); }
   transition: opacity .4s ease;
 }
 #loading-screen.hidden { opacity: 0; pointer-events: none; }
-
 .loader-eyebrow {
   font-family: var(--mono); font-size: .7rem;
   letter-spacing: .14em; text-transform: uppercase;
@@ -88,15 +77,8 @@ code { font-family: var(--mono); font-size: .85em; color: var(--amber); }
   font-family: var(--serif); font-size: 1.5rem; font-weight: 600;
   color: var(--text);
 }
-.loader-bar-wrap {
-  width: 180px; height: 1px;
-  background: var(--border);
-}
-.loader-bar {
-  height: 1px; width: 0%;
-  background: var(--amber);
-  transition: width .4s ease;
-}
+.loader-bar-wrap { width: 180px; height: 1px; background: var(--border); }
+.loader-bar { height: 1px; width: 0%; background: var(--amber); transition: width .4s ease; }
 .loader-status {
   font-family: var(--mono); font-size: .72rem;
   color: var(--muted); letter-spacing: .06em;
@@ -117,10 +99,7 @@ nav {
   color: var(--amber); letter-spacing: .06em; font-weight: 500;
 }
 .nav-right { display: flex; gap: 1rem; align-items: center; }
-.nav-right a {
-  color: var(--muted); font-size: .82rem;
-  font-family: var(--mono); transition: color .18s;
-}
+.nav-right a { color: var(--muted); font-size: .82rem; font-family: var(--mono); transition: color .18s; }
 .nav-right a:hover { color: var(--text); opacity: 1; }
 .nav-gh {
   display: flex; align-items: center; gap: .4rem;
@@ -142,157 +121,110 @@ nav {
 }
 .pulse-dot.stale   { background: var(--amber); animation: none; }
 .pulse-dot.unknown { background: var(--dim);   animation: none; }
-
 @keyframes pulse {
   0%,100% { opacity:1; transform:scale(1); }
   50%      { opacity:.4; transform:scale(.75); }
 }
 
 /* ── HERO ── */
-header {
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-alt);
-}
-.hero {
-  max-width: var(--max); margin: 0 auto;
-  padding: 4.5rem 2rem 3.5rem;
-  position: relative;
-}
+header { border-bottom: 1px solid var(--border); background: var(--bg-alt); }
+.hero { max-width: var(--max); margin: 0 auto; padding: 4.5rem 2rem 3.5rem; position: relative; }
 .hero::after {
   content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   background: radial-gradient(ellipse at 20% 60%, rgba(201,169,110,.06) 0%, transparent 60%);
   pointer-events: none; z-index: 0;
 }
 .hero-inner { position: relative; z-index: 1; }
-
 .eyebrow {
   font-family: var(--mono); font-size: .7rem; color: var(--amber);
   letter-spacing: .14em; text-transform: uppercase;
   margin-bottom: 1rem; opacity: .7;
   animation: up .5s ease both;
 }
-.hero h1 {
-  font-size: clamp(2rem, 4vw, 3rem);
-  color: var(--text); margin-bottom: 1rem;
-  animation: up .5s .06s ease both;
-}
-.hero-sub {
-  font-size: .95rem; color: var(--muted);
-  max-width: 560px; margin-bottom: 2rem; line-height: 1.75;
-  animation: up .5s .12s ease both;
-}
-.hero-stats {
-  display: flex; gap: 2.5rem; flex-wrap: wrap;
-  animation: up .5s .18s ease both;
-}
+.hero h1 { font-size: clamp(2rem, 4vw, 3rem); color: var(--text); margin-bottom: 1rem; animation: up .5s .06s ease both; }
+.hero-sub { font-size: .95rem; color: var(--muted); max-width: 560px; margin-bottom: 2rem; line-height: 1.75; animation: up .5s .12s ease both; }
+.hero-stats { display: flex; gap: 2.5rem; flex-wrap: wrap; animation: up .5s .18s ease both; }
 .hero-stat { display: flex; flex-direction: column; gap: .15rem; }
-.hero-stat-val {
-  font-family: var(--serif); font-size: 1.6rem; font-weight: 600;
-  color: var(--text); line-height: 1;
-}
-.hero-stat-lbl {
-  font-family: var(--mono); font-size: .65rem; color: var(--muted);
-  letter-spacing: .12em; text-transform: uppercase;
-}
+.hero-stat-val { font-family: var(--serif); font-size: 1.6rem; font-weight: 600; color: var(--text); line-height: 1; }
+.hero-stat-lbl { font-family: var(--mono); font-size: .65rem; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; }
 .stat-divider { width: 1px; background: var(--border); align-self: stretch; }
 
 /* ── CONTROLS ── */
-.controls-section {
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
-}
+.controls-section { border-bottom: 1px solid var(--border); background: var(--bg); }
 .controls-inner {
   max-width: var(--max); margin: 0 auto;
   padding: 1rem 2rem;
   display: flex; flex-wrap: wrap; gap: .875rem; align-items: center;
 }
-
-/* search */
 .search-wrap { position: relative; flex: 1; min-width: 200px; max-width: 320px; }
-.search-wrap svg {
-  position: absolute; left: 11px; top: 50%;
-  transform: translateY(-50%);
-  color: var(--dim); pointer-events: none;
-}
+.search-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--dim); pointer-events: none; }
 input[type="text"] {
-  width: 100%;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: .5rem .875rem .5rem 2.1rem;
-  color: var(--text);
-  font-family: var(--mono); font-size: .8rem;
-  outline: none;
-  transition: border-color .18s;
+  width: 100%; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r); padding: .5rem .875rem .5rem 2.1rem;
+  color: var(--text); font-family: var(--mono); font-size: .8rem;
+  outline: none; transition: border-color .18s;
 }
 input[type="text"]::placeholder { color: var(--dim); }
 input[type="text"]:focus { border-color: var(--bwarm); }
-
-/* filter groups */
 .filter-group { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
-.filter-label {
-  font-family: var(--mono); font-size: .65rem;
-  color: var(--dim); letter-spacing: .14em;
-  text-transform: uppercase; padding-right: .25rem;
-}
-
+.filter-label { font-family: var(--mono); font-size: .65rem; color: var(--dim); letter-spacing: .14em; text-transform: uppercase; padding-right: .25rem; }
 .tag-pill {
   display: inline-flex; align-items: center; gap: .35rem;
-  padding: .28rem .7rem;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  font-family: var(--mono); font-size: .7rem;
-  color: var(--muted); cursor: pointer;
-  transition: border-color .15s, color .15s, background .15s;
+  padding: .28rem .7rem; border-radius: 20px;
+  border: 1px solid var(--border); background: var(--bg-card);
+  font-family: var(--mono); font-size: .7rem; color: var(--muted);
+  cursor: pointer; transition: border-color .15s, color .15s, background .15s;
   user-select: none; letter-spacing: .02em;
 }
 .tag-pill:hover  { border-color: var(--bwarm); color: var(--amber); }
 .tag-pill.active { border-color: var(--bwarm); color: var(--amber); background: var(--amber-dim); }
 .tag-pill .dot   { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
-
 .controls-right { margin-left: auto; display: flex; gap: .75rem; align-items: center; }
-.result-count {
-  font-family: var(--mono); font-size: .75rem; color: var(--dim);
-  letter-spacing: .04em; white-space: nowrap;
-}
+.result-count { font-family: var(--mono); font-size: .75rem; color: var(--dim); letter-spacing: .04em; white-space: nowrap; }
 .result-count b { color: var(--amber); font-weight: 500; }
-
 .btn-clear {
-  padding: .35rem .8rem;
-  border-radius: 5px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--muted);
-  font-family: var(--mono); font-size: .7rem;
-  cursor: pointer; transition: border-color .15s, color .15s;
-  letter-spacing: .04em;
+  padding: .35rem .8rem; border-radius: 5px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--muted); font-family: var(--mono); font-size: .7rem;
+  cursor: pointer; transition: border-color .15s, color .15s; letter-spacing: .04em;
 }
 .btn-clear:hover { border-color: var(--bwarm); color: var(--amber); }
 
 /* ── TABLE ── */
-.table-section {
-  max-width: var(--max); margin: 0 auto;
-  padding: 0 2rem 5rem;
-}
-
+.table-section { max-width: var(--max); margin: 0 auto; padding: 0 2rem 5rem; }
 .table-wrap { overflow-x: auto; }
 
 table {
-  width: 100%; border-collapse: collapse;
-  margin-top: .875rem; min-width: 860px;
+  width: 100%;
+  /*
+   * FIX: border-collapse:separate + border-spacing:0 is the only reliable
+   * cross-browser solution for sticky thead with visible separators.
+   *
+   * With border-collapse:collapse the browser merges the thead/tbody boundary
+   * into a single "shared" border that it assigns to the first <tbody> row —
+   * not to the <th>. That border therefore scrolls away with the row, leaving
+   * the sticky header flush against the row below it (the "blocking" effect).
+   *
+   * With border-collapse:separate every cell owns its own borders, so the
+   * border-bottom on <th> is painted as part of the sticky element and
+   * travels with it correctly. border-spacing:0 collapses the cell gaps.
+   */
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: .875rem;
+  min-width: 860px;
 }
 
-/* header row
-   FIX: border-bottom replaced with box-shadow so the separator line
-   travels with the sticky element instead of being clipped by the
-   table's border-collapse model (which assigns the shared border to
-   the first tbody row, causing it to scroll away and leave the sticky
-   header visually overlapping the first data row).                    */
 thead th {
-  position: sticky; top: 57px; z-index: 10;
+  position: sticky;
+  top: 57px;
+  /*
+   * z-index must be high enough to clear tbody rows that temporarily
+   * form stacking contexts via the rowIn animation (opacity/transform).
+   */
+  z-index: 100;
   background: var(--bg);
-  box-shadow: 0 1px 0 var(--border);   /* ← was: border-bottom: 1px solid var(--border) */
+  border-bottom: 1px solid var(--border);
   padding: .6rem 1rem;
   text-align: left;
   font-family: var(--mono); font-size: .65rem;
@@ -309,9 +241,7 @@ thead th .th-inner { display: flex; align-items: center; gap: .4rem; }
 .sort-icon.desc::after { content: '▼'; }
 .sort-icon.none::after { content: '⇅'; }
 
-/* data rows */
 tbody tr {
-  border-bottom: 1px solid var(--border);
   transition: background .14s;
   animation: rowIn .28s ease both;
 }
@@ -319,29 +249,27 @@ tbody tr {
   from { opacity:0; transform:translateY(5px); }
   to   { opacity:1; transform:translateY(0); }
 }
-tbody tr:hover { background: var(--amber-dim); }
+/* hover must target td, not tr, because with border-separate tr has no bg */
+tbody tr:hover td { background: var(--amber-dim); }
 
 tbody td {
   padding: .9rem 1rem;
   vertical-align: middle;
   font-size: .875rem;
+  /* border moved to td (required with border-collapse:separate) */
+  border-bottom: 1px solid var(--border);
 }
 
 /* ── NAME CELL ── */
 .fw-name-link {
   font-family: var(--serif); font-size: .98rem; font-weight: 600;
-  color: var(--text);
-  display: inline-flex; align-items: center; gap: .5rem;
+  color: var(--text); display: inline-flex; align-items: center; gap: .5rem;
   transition: color .15s;
 }
 .fw-name-link:hover { color: var(--amber); opacity: 1; }
 .fw-link-icon { font-size: .7rem; opacity: 0; transition: opacity .15s; }
 .fw-name-link:hover .fw-link-icon { opacity: 1; }
-.fw-desc {
-  font-size: .78rem; color: var(--muted);
-  margin-top: .2rem; max-width: 340px;
-  line-height: 1.55; font-family: var(--sans);
-}
+.fw-desc { font-size: .78rem; color: var(--muted); margin-top: .2rem; max-width: 340px; line-height: 1.55; font-family: var(--sans); }
 .archived-badge {
   display: inline-block; font-family: var(--mono); font-size: .58rem;
   padding: .1rem .4rem; border-radius: 3px;
@@ -352,23 +280,11 @@ tbody td {
 }
 
 /* ── STARS ── */
-.stars-val {
-  display: flex; align-items: center; gap: .45rem;
-  font-family: var(--mono); font-size: .82rem;
-  color: var(--text); font-weight: 500;
-}
+.stars-val { display: flex; align-items: center; gap: .45rem; font-family: var(--mono); font-size: .82rem; color: var(--text); font-weight: 500; }
 .star-glyph { color: var(--amber); font-size: .8rem; }
-.stars-bar-wrap {
-  margin-top: .3rem; height: 2px;
-  background: var(--border); border-radius: 2px; max-width: 72px;
-}
-.stars-bar {
-  height: 2px; border-radius: 2px;
-  background: linear-gradient(90deg, var(--amber), #e8c990);
-}
-.forks-val {
-  font-family: var(--mono); font-size: .75rem; color: var(--dim);
-}
+.stars-bar-wrap { margin-top: .3rem; height: 2px; background: var(--border); border-radius: 2px; max-width: 72px; }
+.stars-bar { height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--amber), #e8c990); }
+.forks-val { font-family: var(--mono); font-size: .75rem; color: var(--dim); }
 
 /* ── LANGUAGE BADGE ── */
 .lang-badge {
@@ -378,7 +294,6 @@ tbody td {
   border: 1px solid; letter-spacing: .03em;
 }
 .lang-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-
 .lang-Python     { border-color: rgba(130,180,200,.35); color: var(--blue);  background: rgba(130,180,200,.06); }
 .lang-Python     .lang-dot { background: var(--blue); }
 .lang-TypeScript { border-color: rgba(201,169,110,.35); color: var(--amber); background: var(--amber-dim); }
@@ -389,7 +304,7 @@ tbody td {
 .lang-Go         .lang-dot { background: var(--green); }
 .lang-Rust       { border-color: rgba(200,125,125,.35); color: var(--red);   background: rgba(200,125,125,.06); }
 .lang-Rust       .lang-dot { background: var(--red); }
-.lang-fallback   { border-color: var(--border);          color: var(--muted); background: var(--bg-card); }
+.lang-fallback   { border-color: var(--border); color: var(--muted); background: var(--bg-card); }
 .lang-fallback   .lang-dot { background: var(--muted); }
 
 /* ── LICENSE ── */
@@ -397,81 +312,49 @@ tbody td {
   font-family: var(--mono); font-size: .68rem;
   padding: .22rem .6rem; border-radius: 4px;
   border: 1px solid var(--border);
-  color: var(--dim); background: var(--bg-card);
-  letter-spacing: .04em;
+  color: var(--dim); background: var(--bg-card); letter-spacing: .04em;
 }
 
 /* ── TOPIC CHIPS ── */
 .chip-list { display: flex; flex-wrap: wrap; gap: .3rem; }
 .chip {
-  display: inline-block;
-  padding: .15rem .55rem; border-radius: 3px;
-  font-family: var(--mono); font-size: .65rem;
-  letter-spacing: .04em; font-weight: 400;
-  border: 1px solid var(--border);
-  color: var(--dim); background: var(--bg-card);
+  display: inline-block; padding: .15rem .55rem; border-radius: 3px;
+  font-family: var(--mono); font-size: .65rem; letter-spacing: .04em;
+  border: 1px solid var(--border); color: var(--dim); background: var(--bg-card);
   cursor: pointer; transition: border-color .14s, color .14s, background .14s;
 }
-.chip:hover, .chip.active {
-  border-color: var(--bwarm); color: var(--amber); background: var(--amber-dim);
-}
-.chip.manual {
-  border-color: rgba(130,180,200,.25); color: var(--blue);
-  background: rgba(130,180,200,.05);
-}
-.chip.manual:hover, .chip.manual.active {
-  border-color: rgba(130,180,200,.5); color: var(--blue);
-  background: rgba(130,180,200,.1);
-}
+.chip:hover, .chip.active { border-color: var(--bwarm); color: var(--amber); background: var(--amber-dim); }
+.chip.manual { border-color: rgba(130,180,200,.25); color: var(--blue); background: rgba(130,180,200,.05); }
+.chip.manual:hover, .chip.manual.active { border-color: rgba(130,180,200,.5); color: var(--blue); background: rgba(130,180,200,.1); }
 
 /* ── EMPTY / SKELETON ── */
-.empty-state {
-  text-align: center; padding: 5rem 1rem;
-  color: var(--muted);
-}
-.empty-state .icon {
-  font-family: var(--serif); font-size: 2rem;
-  color: var(--dim); margin-bottom: .875rem; display: block;
-}
+.empty-state { text-align: center; padding: 5rem 1rem; color: var(--muted); }
+.empty-state .icon { font-family: var(--serif); font-size: 2rem; color: var(--dim); margin-bottom: .875rem; display: block; }
 .empty-state p { font-size: .9rem; margin-bottom: .4rem; }
 .empty-state small { font-family: var(--mono); font-size: .72rem; color: var(--dim); }
-
 .skel {
   background: linear-gradient(90deg, var(--bg-card) 25%, rgba(255,255,255,.04) 50%, var(--bg-card) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.6s infinite;
+  background-size: 200% 100%; animation: shimmer 1.6s infinite;
   border-radius: 4px; height: 11px; display: inline-block;
 }
 @keyframes shimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
-.skeleton-row td { padding: .9rem 1rem; }
+.skeleton-row td { padding: .9rem 1rem; border-bottom: 1px solid var(--border); }
 
 /* ── ERROR BANNER ── */
 .error-banner {
-  display: none;
-  background: rgba(200,125,125,.06);
+  display: none; background: rgba(200,125,125,.06);
   border-bottom: 1px solid rgba(200,125,125,.25);
-  padding: .75rem 2rem;
-  font-family: var(--mono); font-size: .78rem;
+  padding: .75rem 2rem; font-family: var(--mono); font-size: .78rem;
   color: var(--red); letter-spacing: .03em;
 }
 
 /* ── FOOTER ── */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 2rem;
-}
-.footer-inner {
-  max-width: var(--max); margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 1rem;
-}
-.footer-logo {
-  font-family: var(--mono); font-size: .8rem;
-  color: var(--amber); letter-spacing: .06em; opacity: .55;
-}
+footer { border-top: 1px solid var(--border); padding: 2rem; }
+.footer-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+.footer-logo { font-family: var(--mono); font-size: .8rem; color: var(--amber); letter-spacing: .06em; opacity: .55; }
 .flinks { display: flex; gap: 1.5rem; }
 .flinks a { font-size: .78rem; color: var(--dim); transition: color .18s; }
 .flinks a:hover { color: var(--text); opacity: 1; }
@@ -540,25 +423,13 @@ footer {
       <h1>AI Agent Frameworks —<br><em>ranked, tagged, and searchable</em></h1>
       <p class="hero-sub">A curated index of open-source agent frameworks with live GitHub stats. Stars, forks, language, license, and topics fetched daily. Filter by language or topic, sort by any column.</p>
       <div class="hero-stats">
-        <div class="hero-stat">
-          <span class="hero-stat-val" id="total-count">—</span>
-          <span class="hero-stat-lbl">Frameworks</span>
-        </div>
+        <div class="hero-stat"><span class="hero-stat-val" id="total-count">—</span><span class="hero-stat-lbl">Frameworks</span></div>
         <div class="stat-divider"></div>
-        <div class="hero-stat">
-          <span class="hero-stat-val" id="total-stars">—</span>
-          <span class="hero-stat-lbl">Total Stars</span>
-        </div>
+        <div class="hero-stat"><span class="hero-stat-val" id="total-stars">—</span><span class="hero-stat-lbl">Total Stars</span></div>
         <div class="stat-divider"></div>
-        <div class="hero-stat">
-          <span class="hero-stat-val" id="total-langs">—</span>
-          <span class="hero-stat-lbl">Languages</span>
-        </div>
+        <div class="hero-stat"><span class="hero-stat-val" id="total-langs">—</span><span class="hero-stat-lbl">Languages</span></div>
         <div class="stat-divider"></div>
-        <div class="hero-stat">
-          <span class="hero-stat-val" id="total-topics">—</span>
-          <span class="hero-stat-lbl">Unique Topics</span>
-        </div>
+        <div class="hero-stat"><span class="hero-stat-val" id="total-topics">—</span><span class="hero-stat-lbl">Unique Topics</span></div>
       </div>
     </div>
   </div>
@@ -573,17 +444,14 @@ footer {
       </svg>
       <input type="text" id="search" placeholder="Search name, topic, language…">
     </div>
-
     <div class="filter-group">
       <span class="filter-label">Lang</span>
       <div id="lang-filters"></div>
     </div>
-
     <div class="filter-group" id="topic-filter-group">
       <span class="filter-label">Topic</span>
       <div id="topic-filters"></div>
     </div>
-
     <div class="controls-right">
       <span class="result-count"><b id="shown-count">—</b> of <span id="total-shown">—</span></span>
       <button class="btn-clear" onclick="clearFilters()">✕ clear</button>
@@ -631,7 +499,6 @@ footer {
 </footer>
 
 <script>
-// ─── STATE ───────────────────────────────────────────────────
 let FRAMEWORKS = [];
 let maxStars   = 1;
 
@@ -642,7 +509,6 @@ const state = {
   sort:   { col: 'stars', dir: 'desc' }
 };
 
-// ─── LOADER ──────────────────────────────────────────────────
 function setProgress(pct, msg) {
   document.getElementById('loader-bar').style.width    = pct + '%';
   document.getElementById('loader-status').textContent = msg;
@@ -653,48 +519,28 @@ function hideLoader() {
   setTimeout(() => el.remove(), 450);
 }
 
-// ─── FRESHNESS ───────────────────────────────────────────────
 function setFreshness(isoDate) {
   const dot  = document.getElementById('pulse-dot');
   const text = document.getElementById('freshness-text');
-  if (!isoDate) {
-    dot.className    = 'pulse-dot unknown';
-    text.textContent = 'unknown data age';
-    return;
-  }
+  if (!isoDate) { dot.className = 'pulse-dot unknown'; text.textContent = 'unknown data age'; return; }
   const d     = new Date(isoDate);
   const diffH = (Date.now() - d) / 36e5;
   const label = d.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' });
   if (diffH < 26) {
-    dot.className    = 'pulse-dot';
-    text.textContent = `fresh · ${label}`;
+    dot.className = 'pulse-dot'; text.textContent = `fresh · ${label}`;
   } else {
-    const days = Math.floor(diffH / 24);
-    dot.className    = 'pulse-dot stale';
-    text.textContent = `${days}d old · ${label}`;
+    dot.className = 'pulse-dot stale'; text.textContent = `${Math.floor(diffH/24)}d old · ${label}`;
   }
 }
 
-// ─── HELPERS ─────────────────────────────────────────────────
-function fmt(n) {
-  if (n >= 1000) return (n / 1000).toFixed(n >= 10000 ? 0 : 1) + 'k';
-  return String(n);
-}
-function fmtBig(n) {
-  if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
-  if (n >= 1e3) return Math.round(n / 1e3) + 'k';
-  return String(n);
-}
-function getLangClass(l) {
-  return ['Python','TypeScript','JavaScript','Go','Rust'].includes(l) ? 'lang-' + l : 'lang-fallback';
-}
-function getAllLangs() {
-  return [...new Set(FRAMEWORKS.map(f => f.language).filter(Boolean))].sort();
-}
-function getAllTopics() {
-  const counts = {};
-  FRAMEWORKS.forEach(f => (f.topics || []).forEach(t => { counts[t] = (counts[t]||0) + 1; }));
-  return Object.entries(counts).filter(([,c]) => c >= 2).sort((a,b) => b[1]-a[1]).map(([t]) => t);
+function fmt(n)    { if (n >= 1000) return (n/1000).toFixed(n >= 10000 ? 0 : 1) + 'k'; return String(n); }
+function fmtBig(n) { if (n >= 1e6) return (n/1e6).toFixed(1)+'M'; if (n >= 1e3) return Math.round(n/1e3)+'k'; return String(n); }
+function getLangClass(l) { return ['Python','TypeScript','JavaScript','Go','Rust'].includes(l) ? 'lang-'+l : 'lang-fallback'; }
+function getAllLangs()   { return [...new Set(FRAMEWORKS.map(f => f.language).filter(Boolean))].sort(); }
+function getAllTopics()  {
+  const c = {};
+  FRAMEWORKS.forEach(f => (f.topics||[]).forEach(t => { c[t]=(c[t]||0)+1; }));
+  return Object.entries(c).filter(([,v])=>v>=2).sort((a,b)=>b[1]-a[1]).map(([t])=>t);
 }
 function getManualSet() {
   const s = new Set();
@@ -702,193 +548,145 @@ function getManualSet() {
   return s;
 }
 
-// ─── FILTER + SORT ───────────────────────────────────────────
 function filtered() {
   return FRAMEWORKS.filter(f => {
     const q = state.search.toLowerCase();
-    if (q) {
-      const hay = [f.name, f.description, f.language, ...(f.topics||[])].join(' ').toLowerCase();
-      if (!hay.includes(q)) return false;
-    }
-    if (state.langs.size  > 0 && !state.langs.has(f.language))                  return false;
+    if (q && ![f.name, f.description, f.language, ...(f.topics||[])].join(' ').toLowerCase().includes(q)) return false;
+    if (state.langs.size  > 0 && !state.langs.has(f.language)) return false;
     if (state.topics.size > 0 && !(f.topics||[]).some(t => state.topics.has(t))) return false;
     return true;
   });
 }
 function sorted(arr) {
   const { col, dir } = state.sort;
-  return [...arr].sort((a, b) => {
-    let va = a[col] ?? '', vb = b[col] ?? '';
-    if (typeof va === 'string') {
-      const r = va.localeCompare(vb);
-      return dir === 'asc' ? r : -r;
-    }
-    return dir === 'asc' ? va - vb : vb - va;
+  return [...arr].sort((a,b) => {
+    let va = a[col]??'', vb = b[col]??'';
+    if (typeof va === 'string') { const r = va.localeCompare(vb); return dir==='asc'?r:-r; }
+    return dir==='asc' ? va-vb : vb-va;
   });
 }
 
-// ─── RENDER TABLE ────────────────────────────────────────────
 function renderTable() {
-  const rows = sorted(filtered());
+  const rows    = sorted(filtered());
+  const manuals = getManualSet();
   document.getElementById('shown-count').textContent = rows.length;
   document.getElementById('total-shown').textContent  = FRAMEWORKS.length;
-
-  const tbody   = document.getElementById('table-body');
-  const manuals = getManualSet();
+  const tbody = document.getElementById('table-body');
 
   if (rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6">
-      <div class="empty-state">
-        <span class="icon">— ∅ —</span>
-        <p>No frameworks match your filters</p>
-        <small>Try broadening your search or clearing active filters</small>
-      </div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">
+      <span class="icon">— ∅ —</span>
+      <p>No frameworks match your filters</p>
+      <small>Try broadening your search or clearing active filters</small>
+    </div></td></tr>`;
     return;
   }
 
-  tbody.innerHTML = rows.map((f, i) => {
-    const pct       = Math.round((f.stars / maxStars) * 100);
+  tbody.innerHTML = rows.map((f,i) => {
+    const pct       = Math.round((f.stars/maxStars)*100);
     const langClass = getLangClass(f.language);
     const archBadge = f.archived ? '<span class="archived-badge">archived</span>' : '';
-
-    const chips = (f.topics || []).map(t => {
+    const chips     = (f.topics||[]).map(t => {
       const isManual = manuals.has(t) && (f.manualTags||[]).includes(t);
       const isActive = state.topics.has(t);
-      const cls = ['chip', isManual ? 'manual' : '', isActive ? 'active' : ''].filter(Boolean).join(' ');
+      const cls = ['chip', isManual?'manual':'', isActive?'active':''].filter(Boolean).join(' ');
       return `<span class="${cls}" onclick="toggleTopic('${t}')">${t}</span>`;
     }).join('');
-
-    return `<tr style="animation-delay:${i * 0.016}s">
+    return `<tr style="animation-delay:${i*.016}s">
       <td>
         <a class="fw-name-link" href="${f.url}" target="_blank" rel="noopener">
           ${f.name}${archBadge}<span class="fw-link-icon">↗</span>
         </a>
-        <div class="fw-desc">${f.description || ''}</div>
+        <div class="fw-desc">${f.description||''}</div>
       </td>
       <td>
         <div class="stars-val"><span class="star-glyph">★</span>${fmt(f.stars)}</div>
         <div class="stars-bar-wrap"><div class="stars-bar" style="width:${pct}%"></div></div>
       </td>
       <td><span class="forks-val">${fmt(f.forks)}</span></td>
-      <td><span class="lang-badge ${langClass}"><span class="lang-dot"></span>${f.language || 'Unknown'}</span></td>
-      <td><span class="license-badge">${f.license || '—'}</span></td>
-      <td>
-        <div class="chip-list">
-          ${chips || '<span style="font-family:var(--mono);font-size:.65rem;color:var(--dim)">no topics</span>'}
-        </div>
-      </td>
+      <td><span class="lang-badge ${langClass}"><span class="lang-dot"></span>${f.language||'Unknown'}</span></td>
+      <td><span class="license-badge">${f.license||'—'}</span></td>
+      <td><div class="chip-list">${chips||'<span style="font-family:var(--mono);font-size:.65rem;color:var(--dim)">no topics</span>'}</div></td>
     </tr>`;
   }).join('');
 }
 
-// ─── RENDER FILTERS ──────────────────────────────────────────
 function renderFilters() {
   document.getElementById('lang-filters').innerHTML = getAllLangs().map(l => {
     const a = state.langs.has(l) ? ' active' : '';
     return `<span class="tag-pill${a}" onclick="toggleLang('${l}')"><span class="dot"></span>${l}</span>`;
   }).join('');
-
   const topics = getAllTopics();
-  const tg     = document.getElementById('topic-filter-group');
-  if (topics.length === 0) {
-    tg.style.display = 'none';
-  } else {
-    tg.style.display = '';
-    document.getElementById('topic-filters').innerHTML = topics.slice(0, 22).map(t => {
-      const a = state.topics.has(t) ? ' active' : '';
-      return `<span class="tag-pill${a}" onclick="toggleTopic('${t}')">${t}</span>`;
-    }).join('');
-  }
+  const tg = document.getElementById('topic-filter-group');
+  if (!topics.length) { tg.style.display='none'; return; }
+  tg.style.display = '';
+  document.getElementById('topic-filters').innerHTML = topics.slice(0,22).map(t => {
+    const a = state.topics.has(t) ? ' active' : '';
+    return `<span class="tag-pill${a}" onclick="toggleTopic('${t}')">${t}</span>`;
+  }).join('');
 }
 
 function renderHeaders() {
   ['name','stars','forks','language','license'].forEach(col => {
-    const si = document.getElementById('si-' + col);
-    const th = document.getElementById('th-' + col);
-    if (!si || !th) return;
-    if (state.sort.col === col) {
-      si.className = 'sort-icon ' + state.sort.dir;
-      th.classList.add('sorted');
-    } else {
-      si.className = 'sort-icon none';
-      th.classList.remove('sorted');
-    }
+    const si = document.getElementById('si-'+col);
+    const th = document.getElementById('th-'+col);
+    if (!si||!th) return;
+    if (state.sort.col===col) { si.className='sort-icon '+state.sort.dir; th.classList.add('sorted'); }
+    else { si.className='sort-icon none'; th.classList.remove('sorted'); }
   });
 }
 
 function renderHeroStats() {
-  document.getElementById('total-count').textContent  = FRAMEWORKS.length;
-  document.getElementById('total-stars').textContent  = fmtBig(FRAMEWORKS.reduce((s,f) => s+(f.stars||0), 0));
-  document.getElementById('total-langs').textContent  = getAllLangs().length;
+  document.getElementById('total-count').textContent = FRAMEWORKS.length;
+  document.getElementById('total-stars').textContent = fmtBig(FRAMEWORKS.reduce((s,f)=>s+(f.stars||0),0));
+  document.getElementById('total-langs').textContent = getAllLangs().length;
   const allTopics = new Set();
   FRAMEWORKS.forEach(f => (f.topics||[]).forEach(t => allTopics.add(t)));
   document.getElementById('total-topics').textContent = allTopics.size;
 }
 
-function render() {
-  renderTable();
-  renderFilters();
-  renderHeaders();
-}
+function render() { renderTable(); renderFilters(); renderHeaders(); }
 
-// ─── INTERACTIONS ────────────────────────────────────────────
 function setSort(col) {
-  if (state.sort.col === col) {
-    state.sort.dir = state.sort.dir === 'asc' ? 'desc' : 'asc';
-  } else {
-    state.sort.col = col;
-    state.sort.dir = (col === 'stars' || col === 'forks') ? 'desc' : 'asc';
-  }
+  if (state.sort.col===col) { state.sort.dir = state.sort.dir==='asc'?'desc':'asc'; }
+  else { state.sort.col=col; state.sort.dir=(col==='stars'||col==='forks')?'desc':'asc'; }
   render();
 }
 function toggleLang(l)  { state.langs.has(l)  ? state.langs.delete(l)  : state.langs.add(l);  render(); }
 function toggleTopic(t) { state.topics.has(t) ? state.topics.delete(t) : state.topics.add(t); render(); }
 function clearFilters() {
-  state.search = ''; state.langs.clear(); state.topics.clear();
-  document.getElementById('search').value = '';
-  render();
+  state.search=''; state.langs.clear(); state.topics.clear();
+  document.getElementById('search').value=''; render();
 }
-document.getElementById('search').addEventListener('input', e => {
-  state.search = e.target.value; render();
-});
+document.getElementById('search').addEventListener('input', e => { state.search=e.target.value; render(); });
 
-// ─── LOAD DATA ───────────────────────────────────────────────
 async function loadData() {
   setProgress(20, 'Fetching data.json…');
   try {
-    const today = new Date().toISOString().slice(0, 10);
-    const res   = await fetch(`data.json?v=${today}`);
+    const res = await fetch(`data.json?v=${new Date().toISOString().slice(0,10)}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
     setProgress(70, 'Parsing…');
     const json = await res.json();
-
-    if (!json.frameworks || json.frameworks.length === 0) {
+    if (!json.frameworks || !json.frameworks.length)
       throw new Error('data.json is empty — trigger the GitHub Actions workflow from the Actions tab first');
-    }
-
     FRAMEWORKS = json.frameworks;
-    maxStars   = Math.max(...FRAMEWORKS.map(f => f.stars || 0), 1);
-
+    maxStars   = Math.max(...FRAMEWORKS.map(f=>f.stars||0), 1);
     setFreshness(json.fetchedAt);
     setProgress(100, `Loaded ${FRAMEWORKS.length} frameworks`);
     renderHeroStats();
     render();
     setTimeout(hideLoader, 350);
-
   } catch (err) {
     setProgress(100, 'Error loading data');
     setTimeout(() => {
       hideLoader();
-      const banner = document.getElementById('error-banner');
       document.getElementById('error-msg').textContent = err.message;
-      banner.style.display = 'block';
-      document.getElementById('table-body').innerHTML = `<tr><td colspan="6">
-        <div class="empty-state">
-          <span class="icon">— ⚠ —</span>
-          <p>Could not load framework data</p>
-          <small>${err.message}</small>
-        </div></td></tr>`;
+      document.getElementById('error-banner').style.display = 'block';
+      document.getElementById('table-body').innerHTML = `<tr><td colspan="6"><div class="empty-state">
+        <span class="icon">— ⚠ —</span>
+        <p>Could not load framework data</p>
+        <small>${err.message}</small>
+      </div></td></tr>`;
     }, 300);
   }
 }
