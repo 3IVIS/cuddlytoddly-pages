@@ -1,6 +1,6 @@
 {
-  "fetchedAt": "2026-04-29T05:26:34.650Z",
-  "count": 54,
+  "fetchedAt": "2026-04-29T09:53:51.216Z",
+  "count": 59,
   "frameworks": [
     {
       "name": "langchain",
@@ -2571,48 +2571,206 @@
       "archived": false,
       "homepage": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/",
       "lastFetchedAt": "2026-04-29T05:26:34.399Z"
-    }
-  ],
-  "fetchErrors": [
-    {
-      "slug": "PrefectHQ/ControlFlow",
-      "reason": "Unexpected HTTP status 301",
-      "status": 301
     },
     {
-      "slug": "geekan/MetaGPT",
-      "reason": "Unexpected HTTP status 301",
-      "status": 301
+      "name": "ControlFlow",
+      "fullName": "prefect-archive/ControlFlow",
+      "description": "🦾 Take control of your AI agents",
+      "url": "https://github.com/prefect-archive/ControlFlow",
+      "stars": 1392,
+      "forks": 112,
+      "openIssues": 40,
+      "watchers": 1392,
+      "language": "Python",
+      "license": "Apache-2.0",
+      "manualTags": [
+        "declarative",
+        "workflow"
+      ],
+      "githubTopics": [
+        "agentic-framework",
+        "agentic-workflow",
+        "ai",
+        "prefect",
+        "workflow",
+        "agent",
+        "llm"
+      ],
+      "topics": [
+        "declarative",
+        "workflow",
+        "agentic-framework",
+        "agentic-workflow",
+        "ai",
+        "prefect",
+        "agent",
+        "llm"
+      ],
+      "updatedAt": "2026-04-28T15:50:35Z",
+      "pushedAt": "2025-08-22T13:51:57Z",
+      "archived": true,
+      "homepage": "https://controlflow.ai",
+      "lastFetchedAt": "2026-04-29T09:53:48.253Z"
     },
     {
-      "slug": "OpenBML/AgentVerse",
-      "reason": "Not found — repo may have been deleted, renamed, or made private",
-      "status": 404
+      "name": "MetaGPT",
+      "fullName": "FoundationAgents/MetaGPT",
+      "description": "🌟 The Multi-Agent Framework: First AI Software Company, Towards Natural Language Programming",
+      "url": "https://github.com/FoundationAgents/MetaGPT",
+      "stars": 67537,
+      "forks": 8578,
+      "openIssues": 123,
+      "watchers": 67537,
+      "language": "Python",
+      "license": "MIT",
+      "manualTags": [
+        "multi-agent",
+        "code-gen",
+        "popular"
+      ],
+      "githubTopics": [
+        "agent",
+        "gpt",
+        "llm",
+        "metagpt",
+        "multi-agent"
+      ],
+      "topics": [
+        "multi-agent",
+        "code-gen",
+        "popular",
+        "agent",
+        "gpt",
+        "llm",
+        "metagpt"
+      ],
+      "updatedAt": "2026-04-29T08:57:37Z",
+      "pushedAt": "2026-01-21T10:12:33Z",
+      "archived": false,
+      "homepage": "https://atoms.dev/",
+      "lastFetchedAt": "2026-04-29T09:53:48.956Z"
     },
     {
-      "slug": "autoreason/swarm",
-      "reason": "Not found — repo may have been deleted, renamed, or made private",
-      "status": 404
+      "name": "gpt-engineer",
+      "fullName": "AntonOsika/gpt-engineer",
+      "description": "CLI platform to experiment with codegen. Precursor to: https://lovable.dev",
+      "url": "https://github.com/AntonOsika/gpt-engineer",
+      "stars": 55226,
+      "forks": 7320,
+      "openIssues": 71,
+      "watchers": 55226,
+      "language": "Python",
+      "license": "MIT",
+      "manualTags": [
+        "code-gen",
+        "developer",
+        "popular"
+      ],
+      "githubTopics": [
+        "ai",
+        "coding-assistant",
+        "gpt-4",
+        "openai",
+        "python",
+        "autonomous-agent",
+        "codebase-generation",
+        "code-generation",
+        "codegen",
+        "gpt-engineer"
+      ],
+      "topics": [
+        "code-gen",
+        "developer",
+        "popular",
+        "ai",
+        "coding-assistant",
+        "gpt-4",
+        "openai",
+        "python",
+        "autonomous-agent",
+        "codebase-generation",
+        "code-generation",
+        "codegen",
+        "gpt-engineer"
+      ],
+      "updatedAt": "2026-04-29T06:33:03Z",
+      "pushedAt": "2025-05-14T10:15:10Z",
+      "archived": true,
+      "homepage": "",
+      "lastFetchedAt": "2026-04-29T09:53:49.611Z"
     },
     {
-      "slug": "gpt-engineer-org/gpt-engineer",
-      "reason": "Unexpected HTTP status 301",
-      "status": 301
+      "name": "beeai-framework",
+      "fullName": "i-am-bee/beeai-framework",
+      "description": "Build production-ready AI agents in both Python and Typescript.",
+      "url": "https://github.com/i-am-bee/beeai-framework",
+      "stars": 3228,
+      "forks": 425,
+      "openIssues": 8,
+      "watchers": 3228,
+      "language": "Python",
+      "license": "Apache-2.0",
+      "manualTags": [
+        "ibm",
+        "production"
+      ],
+      "githubTopics": [
+        "agents",
+        "ai",
+        "framework",
+        "ai-agent",
+        "llm",
+        "multiagent",
+        "python",
+        "typescript",
+        "beeai"
+      ],
+      "topics": [
+        "ibm",
+        "production",
+        "agents",
+        "ai",
+        "framework",
+        "ai-agent",
+        "llm",
+        "multiagent",
+        "python",
+        "typescript",
+        "beeai"
+      ],
+      "updatedAt": "2026-04-28T22:36:44Z",
+      "pushedAt": "2026-04-24T16:31:20Z",
+      "archived": false,
+      "homepage": "http://framework.beeai.dev",
+      "lastFetchedAt": "2026-04-29T09:53:50.301Z"
     },
     {
-      "slug": "phidatahq/phidata",
-      "reason": "Unexpected HTTP status 301",
-      "status": 301
-    },
-    {
-      "slug": "i-am-bee/bee-agent-framework",
-      "reason": "Unexpected HTTP status 301",
-      "status": 301
-    },
-    {
-      "slug": "meta-llama/llama-stack",
-      "reason": "Unexpected HTTP status 301",
-      "status": 301
+      "name": "ogx",
+      "fullName": "ogx-ai/ogx",
+      "description": "Open GenAI Stack",
+      "url": "https://github.com/ogx-ai/ogx",
+      "stars": 8362,
+      "forks": 1307,
+      "openIssues": 143,
+      "watchers": 8362,
+      "language": "Python",
+      "license": "MIT",
+      "manualTags": [
+        "meta",
+        "inference",
+        "safety"
+      ],
+      "githubTopics": [],
+      "topics": [
+        "meta",
+        "inference",
+        "safety"
+      ],
+      "updatedAt": "2026-04-29T01:19:21Z",
+      "pushedAt": "2026-04-29T09:52:14Z",
+      "archived": false,
+      "homepage": "https://ogx-ai.github.io/",
+      "lastFetchedAt": "2026-04-29T09:53:50.965Z"
     }
   ]
 }
