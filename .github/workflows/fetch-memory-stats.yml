@@ -314,7 +314,11 @@ jobs:
           fs.writeFileSync('memory-data.json', JSON.stringify(output, null, 2));
           console.log(`\n✓ Wrote memory-data.json with ${results.length} frameworks`);
 
-          if (hardFailures.length > 0) process.exit(2);
+          if (hardFailures.length > 0) {
+            console.error(`\n⚠ ${hardFailures.length} repo(s) could not be fetched (see above). Fix memory-repos.txt and re-run.`);
+            // Exit 0 so the commit step still runs — data was written successfully for the repos that did fetch.
+            process.exit(0);
+          }
           EOF
 
       - name: Commit and push memory-data.json
