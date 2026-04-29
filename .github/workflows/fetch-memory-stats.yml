@@ -1,0 +1,331 @@
+name: Fetch Memory Framework Stats
+
+on:
+  schedule:
+    - cron: '0 3 * * *'   # runs daily at 03:00 UTC (1h after the main workflow)
+  workflow_dispatch:        # allows manual trigger from the Actions tab
+  push:
+    paths:
+      - 'memory-repos.txt' # also re-runs whenever you update memory-repos.txt
+
+jobs:
+  fetch-stats:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # needed to commit memory-data.json back to the repo
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch stats and write memory-data.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STALENESS_HOURS: '20'
+        run: |
+          node --input-type=module - << 'EOF'
+          import fs from 'fs';
+          import https from 'https';
+
+          // ── helpers ────────────────────────────────────────────────────
+
+          function sleep(ms) {
+            return new Promise(r => setTimeout(r, ms));
+          }
+
+          async function get(url, retries = 3, maxRedirects = 5) {
+            const options = {
+              headers: {
+                'Authorization':        `Bearer ${process.env.GITHUB_TOKEN}`,
+                'Accept':               'application/vnd.github+json',
+                'X-GitHub-Api-Version': '2022-11-28',
+                'User-Agent':           'ai-agent-memory-frameworks-observatory'
+              }
+            };
+
+            let currentUrl = url;
+
+            for (let redirect = 0; redirect <= maxRedirects; redirect++) {
+              for (let attempt = 1; attempt <= retries; attempt++) {
+                try {
+                  const result = await new Promise((resolve, reject) => {
+                    const req = https.get(currentUrl, options, (res) => {
+                      let body = '';
+                      res.on('data', chunk => body += chunk);
+                      res.on('end', () => resolve({
+                        statusCode: res.statusCode,
+                        headers:    res.headers,
+                        body
+                      }));
+                    });
+                    req.on('error', reject);
+                  });
+
+                  const { statusCode, headers, body } = result;
+
+                  if (statusCode === 200) {
+                    try {
+                      return { ok: true, data: JSON.parse(body), resolvedUrl: currentUrl };
+                    } catch (e) {
+                      return { ok: false, status: statusCode, reason: `JSON parse error: ${e.message}` };
+                    }
+                  }
+
+                  if (statusCode === 301 || statusCode === 302) {
+                    const location = headers && headers['location'];
+                    if (!location) return { ok: false, status: statusCode, reason: `Redirect with no Location header` };
+                    if (redirect === maxRedirects) return { ok: false, status: statusCode, reason: `Too many redirects` };
+                    console.warn(`  ↪ ${statusCode} redirect: ${currentUrl} → ${location}`);
+                    currentUrl = location;
+                    break;
+                  }
+
+                  if (statusCode === 404) return { ok: false, status: 404, reason: 'Not found' };
+
+                  if (statusCode === 403 || statusCode === 429) {
+                    const resetEpoch = headers && headers['x-ratelimit-reset'];
+                    const resetAt    = resetEpoch ? new Date(parseInt(resetEpoch) * 1000).toISOString() : 'unknown';
+                    return { ok: false, status: statusCode, reason: `Rate limited — resets at ${resetAt}`, rateLimit: true, resetAt };
+                  }
+
+                  if (statusCode >= 500) {
+                    if (attempt < retries) { await sleep(attempt * 3000); continue; }
+                    return { ok: false, status: statusCode, reason: `Server error (${statusCode})` };
+                  }
+
+                  return { ok: false, status: statusCode, reason: `Unexpected HTTP ${statusCode}` };
+
+                } catch (networkErr) {
+                  if (attempt < retries) { await sleep(attempt * 2000); }
+                  else return { ok: false, status: 0, reason: `Network error: ${networkErr.message}` };
+                }
+              }
+            }
+            return { ok: false, status: 0, reason: 'Unexpected exit from fetch loop' };
+          }
+
+          // ── parse memory-repos.txt ─────────────────────────────────────
+          // Format: github_url | layer | memory_class | architecture | license | maturity
+
+          const STALENESS_MS = (parseInt(process.env.STALENESS_HOURS || '20', 10)) * 60 * 60 * 1000;
+
+          const rawFile = fs.readFileSync('memory-repos.txt', 'utf8');
+          const lines   = rawFile
+            .split('\n')
+            .map(l => l.trim())
+            .filter(l => l && !l.startsWith('#'));
+
+          const entries = [];
+          for (const line of lines) {
+            const parts = line.split('|').map(p => p.trim());
+            if (parts.length < 6) {
+              console.warn(`  ⚠ Skipping malformed line: ${line}`);
+              continue;
+            }
+            const [url, layer, memoryClass, architecture, license, maturity] = parts;
+            // Extract owner/repo slug from full GitHub URL
+            const match = url.match(/github\.com\/([^/]+\/[^/\s]+)/);
+            if (!match) {
+              console.warn(`  ⚠ Could not parse GitHub URL: ${url}`);
+              continue;
+            }
+            const slug = match[1].replace(/\/$/, '');
+            entries.push({ slug, url: url.trim(), layer, memoryClass, architecture, license, maturity });
+          }
+
+          // Deduplicate by slug
+          const seenSlugs = new Set();
+          const unique = entries.filter(e => {
+            const key = e.slug.toLowerCase();
+            if (seenSlugs.has(key)) { console.warn(`  ⚠ Duplicate slug skipped: ${e.slug}`); return false; }
+            seenSlugs.add(key);
+            return true;
+          });
+
+          console.log(`Parsed ${unique.length} repos from memory-repos.txt`);
+
+          // ── load previous memory-data.json ─────────────────────────────
+
+          const existingMap = {};
+          try {
+            const prev = JSON.parse(fs.readFileSync('memory-data.json', 'utf8'));
+            if (prev.frameworks && prev.frameworks.length > 0) {
+              for (const fw of prev.frameworks) {
+                existingMap[fw.slug.toLowerCase()] = fw;
+              }
+              console.log(`Loaded previous memory-data.json — ${prev.frameworks.length} frameworks from ${prev.fetchedAt}`);
+            }
+          } catch (_) {
+            console.log('No usable previous memory-data.json — starting fresh');
+          }
+
+          // ── decide which repos need fetching ───────────────────────────
+
+          const now      = Date.now();
+          const toFetch  = [];
+          const carried  = [];
+
+          for (const entry of unique) {
+            const existing = existingMap[entry.slug.toLowerCase()];
+            if (existing && existing.lastFetchedAt) {
+              const age = now - new Date(existing.lastFetchedAt).getTime();
+              if (age < STALENESS_MS) {
+                // Always update static metadata from txt even if not re-fetching
+                carried.push({ ...existing, layer: entry.layer, memoryClass: entry.memoryClass, architecture: entry.architecture, maturity: entry.maturity });
+                continue;
+              }
+            }
+            toFetch.push(entry);
+          }
+
+          console.log(`  ✓ Fresh (skipping)  : ${carried.length}`);
+          console.log(`  ↻ Stale (fetching)  : ${toFetch.length}`);
+
+          // ── fetch ──────────────────────────────────────────────────────
+
+          const freshlyFetched = [];
+          const failures       = [];
+          const redirectedSlugs = [];
+          let   rateLimitedAt  = null;
+
+          for (const entry of toFetch) {
+            const { slug, layer, memoryClass, architecture, license, maturity } = entry;
+
+            if (rateLimitedAt !== null) {
+              const existing = existingMap[slug.toLowerCase()];
+              if (existing) freshlyFetched.push({ ...existing, layer, memoryClass, architecture, maturity });
+              failures.push({ slug, reason: `Skipped — rate limited`, status: 'skipped-rate-limit' });
+              continue;
+            }
+
+            process.stdout.write(`  ${slug} … `);
+            const repoRes = await get(`https://api.github.com/repos/${slug}`);
+
+            if (repoRes.rateLimit) {
+              rateLimitedAt = new Date().toISOString();
+              console.log(`⚠ RATE LIMITED`);
+              const existing = existingMap[slug.toLowerCase()];
+              if (existing) freshlyFetched.push({ ...existing, layer, memoryClass, architecture, maturity });
+              failures.push({ slug, reason: repoRes.reason, status: repoRes.status });
+              await sleep(300);
+              continue;
+            }
+
+            if (!repoRes.ok) {
+              console.log(`✗ ${repoRes.reason}`);
+              const existing = existingMap[slug.toLowerCase()];
+              if (existing) {
+                console.log(`    ↩ Keeping previous data for ${slug}`);
+                freshlyFetched.push({ ...existing, layer, memoryClass, architecture, maturity });
+              }
+              failures.push({ slug, reason: repoRes.reason, status: repoRes.status });
+              await sleep(300);
+              continue;
+            }
+
+            const resolvedSlug = repoRes.resolvedUrl
+              ? repoRes.resolvedUrl.replace('https://api.github.com/repos/', '')
+              : null;
+            if (resolvedSlug && resolvedSlug.toLowerCase() !== slug.toLowerCase()) {
+              redirectedSlugs.push({ old: slug, new: resolvedSlug });
+              console.warn(`\n  ⚠ memory-repos.txt needs updating: ${slug} → ${resolvedSlug}`);
+            }
+
+            const topicsRes    = await get(`https://api.github.com/repos/${slug}/topics`);
+            const githubTopics = topicsRes.ok ? (topicsRes.data.names || []) : [];
+            if (!topicsRes.ok && topicsRes.rateLimit) rateLimitedAt = new Date().toISOString();
+
+            console.log(`✓ ${repoRes.data.stargazers_count.toLocaleString()} ★`);
+
+            const d = repoRes.data;
+            freshlyFetched.push({
+              slug,
+              name:          d.name,
+              fullName:      d.full_name,
+              description:   d.description  || '',
+              url:           d.html_url,
+              stars:         d.stargazers_count,
+              forks:         d.forks_count,
+              language:      d.language     || 'Unknown',
+              // Static metadata from memory-repos.txt
+              layer,
+              memoryClass,
+              architecture,
+              license:       license || (d.license ? d.license.spdx_id : 'None'),
+              maturity,
+              // GitHub extras
+              topics:        githubTopics,
+              archived:      d.archived     || false,
+              updatedAt:     d.updated_at,
+              pushedAt:      d.pushed_at,
+              lastFetchedAt: new Date().toISOString()
+            });
+
+            await sleep(250);
+          }
+
+          // ── merge & deduplicate ────────────────────────────────────────
+
+          const allResults   = [...carried, ...freshlyFetched];
+          const seenFull     = new Set();
+          const results      = allResults.filter(fw => {
+            const key = fw.slug.toLowerCase();
+            if (seenFull.has(key)) return false;
+            seenFull.add(key);
+            return true;
+          });
+
+          // ── summary ────────────────────────────────────────────────────
+
+          const hardFailures = failures.filter(f => f.status !== 'skipped-rate-limit');
+          console.log('\n── Fetch Summary ──────────────────────────────────────────');
+          console.log(`  ✓ Freshly fetched : ${freshlyFetched.length}`);
+          console.log(`  ↩ Carried forward : ${carried.length}`);
+          console.log(`  ✗ Hard failures   : ${hardFailures.length}`);
+          if (rateLimitedAt) console.log(`  ⚠ Rate limited    : yes (hit at ${rateLimitedAt})`);
+          if (redirectedSlugs.length > 0) {
+            console.log(`  ↪ Slugs to update in memory-repos.txt:`);
+            redirectedSlugs.forEach(r => console.log(`      • ${r.old}  →  ${r.new}`));
+          }
+          console.log(`  ━ Total in output : ${results.length}`);
+
+          if (results.length === 0) {
+            console.error('\n✗ CRITICAL: Zero repos in output — refusing to overwrite memory-data.json');
+            process.exit(1);
+          }
+
+          // ── write memory-data.json ─────────────────────────────────────
+
+          const isPartial = rateLimitedAt !== null;
+          const output = {
+            fetchedAt:  new Date().toISOString(),
+            count:      results.length,
+            ...(isPartial && { partial: true, partialReason: `Rate limited at ${rateLimitedAt}` }),
+            frameworks: results,
+            ...(failures.length > 0 && { fetchErrors: failures }),
+            ...(redirectedSlugs.length > 0 && { slugRedirects: redirectedSlugs })
+          };
+
+          fs.writeFileSync('memory-data.json', JSON.stringify(output, null, 2));
+          console.log(`\n✓ Wrote memory-data.json with ${results.length} frameworks`);
+
+          if (hardFailures.length > 0) process.exit(2);
+          EOF
+
+      - name: Commit and push memory-data.json
+        if: success() || failure()
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add memory-data.json
+          if git diff --cached --quiet; then
+            echo "No changes to memory-data.json — nothing to commit"
+          else
+            git commit -m "chore: refresh memory framework stats [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+            git push
+          fi
