@@ -469,9 +469,9 @@ jobs:
 
           // ── exit codes ─────────────────────────────────────────────────
           //
-          //   0 — full success, or graceful partial run (rate limited)
+          //   0 — full success, partial run (rate limited), or some hard failures
+          //       (data was still written — commit step must always run)
           //   1 — zero results (catastrophic, don't overwrite)
-          //   2 — hard fetch failures for some repos (data saved, but degraded)
 
           if (isPartial) {
             console.log('\n⚠ Run ended early due to rate limiting. Re-run manually or wait for the next schedule to fetch the remaining repos.');
@@ -480,7 +480,8 @@ jobs:
 
           if (hardFailures.length > 0) {
             console.error(`\n⚠ ${hardFailures.length} repo(s) could not be fetched (see above). Fix repos.txt and re-run.`);
-            process.exit(2);
+            // Exit 0 so the commit step still runs — data was written for all repos that succeeded.
+            process.exit(0);
           }
           EOF
 
