@@ -42,15 +42,15 @@ jobs:
           }
 
           /**
-           * Fetch a GitHub API URL.
-           * Returns { ok: true, data } on success.
-           * Returns { ok: false, status, reason, rateLimit? } on errors — never throws.
+           * Fetch a GitHub API URL, following up to `maxRedirects` 301/302s.
+           * Returns { ok: true, data, resolvedUrl } on success.
+           * Returns { ok: false, status, reason, rateLimit?, redirectedTo? } on errors.
            *
            * Rate-limit responses (403/429) are returned immediately WITHOUT
            * retrying, so the caller can decide to save progress and stop.
            * Network errors and 5xx responses still retry up to `retries` times.
            */
-          async function get(url, retries = 3) {
+          async function get(url, retries = 3, maxRedirects = 5) {
             const options = {
               headers: {
                 'Authorization':        `Bearer ${process.env.GITHUB_TOKEN}`,
@@ -60,74 +60,96 @@ jobs:
               }
             };
 
-            for (let attempt = 1; attempt <= retries; attempt++) {
-              try {
-                const result = await new Promise((resolve, reject) => {
-                  const req = https.get(url, options, (res) => {
-                    let body = '';
-                    res.on('data', chunk => body += chunk);
-                    res.on('end', () => resolve({
-                      statusCode: res.statusCode,
-                      headers:    res.headers,
-                      body
-                    }));
+            let currentUrl = url;
+
+            for (let redirect = 0; redirect <= maxRedirects; redirect++) {
+              for (let attempt = 1; attempt <= retries; attempt++) {
+                try {
+                  const result = await new Promise((resolve, reject) => {
+                    const req = https.get(currentUrl, options, (res) => {
+                      let body = '';
+                      res.on('data', chunk => body += chunk);
+                      res.on('end', () => resolve({
+                        statusCode: res.statusCode,
+                        headers:    res.headers,
+                        body
+                      }));
+                    });
+                    req.on('error', reject);
                   });
-                  req.on('error', reject);
-                });
 
-                const { statusCode, headers, body } = result;
+                  const { statusCode, headers, body } = result;
 
-                if (statusCode === 200) {
-                  try {
-                    return { ok: true, data: JSON.parse(body) };
-                  } catch (e) {
-                    return { ok: false, status: statusCode, reason: `JSON parse error: ${e.message}` };
+                  if (statusCode === 200) {
+                    try {
+                      return { ok: true, data: JSON.parse(body), resolvedUrl: currentUrl };
+                    } catch (e) {
+                      return { ok: false, status: statusCode, reason: `JSON parse error: ${e.message}` };
+                    }
                   }
-                }
 
-                if (statusCode === 404) {
-                  return { ok: false, status: 404, reason: 'Not found — repo may have been deleted, renamed, or made private' };
-                }
+                  // ── Redirect: follow Location header ──────────────────
+                  if (statusCode === 301 || statusCode === 302) {
+                    const location = headers && headers['location'];
+                    if (!location) {
+                      return { ok: false, status: statusCode, reason: `Redirect (${statusCode}) with no Location header` };
+                    }
+                    if (redirect === maxRedirects) {
+                      return { ok: false, status: statusCode, reason: `Too many redirects (>${maxRedirects}) — final location: ${location}` };
+                    }
+                    // Log the redirect so repos.txt can be updated later
+                    console.warn(`  ↪ ${statusCode} redirect: ${currentUrl} → ${location}`);
+                    currentUrl = location;
+                    break; // break the retry loop, re-enter redirect loop with new URL
+                  }
 
-                // ── Rate limit: return immediately, no retry ──────────────
-                // The caller will detect rateLimit:true and stop the loop,
-                // preserving everything fetched so far.
-                if (statusCode === 403 || statusCode === 429) {
-                  const resetEpoch = headers && headers['x-ratelimit-reset'];
-                  const resetAt    = resetEpoch
-                    ? new Date(parseInt(resetEpoch) * 1000).toISOString()
-                    : 'unknown';
-                  return {
-                    ok:        false,
-                    status:    statusCode,
-                    reason:    `Rate limited — limit resets at ${resetAt}`,
-                    rateLimit: true,
-                    resetAt
-                  };
-                }
+                  if (statusCode === 404) {
+                    return { ok: false, status: 404, reason: 'Not found — repo may have been deleted, renamed, or made private' };
+                  }
 
-                if (statusCode >= 500) {
+                  // ── Rate limit: return immediately, no retry ──────────
+                  if (statusCode === 403 || statusCode === 429) {
+                    const resetEpoch = headers && headers['x-ratelimit-reset'];
+                    const resetAt    = resetEpoch
+                      ? new Date(parseInt(resetEpoch) * 1000).toISOString()
+                      : 'unknown';
+                    return {
+                      ok:        false,
+                      status:    statusCode,
+                      reason:    `Rate limited — limit resets at ${resetAt}`,
+                      rateLimit: true,
+                      resetAt
+                    };
+                  }
+
+                  if (statusCode >= 500) {
+                    if (attempt < retries) {
+                      const wait = attempt * 3000;
+                      console.warn(`  ⚠ HTTP ${statusCode} (attempt ${attempt}/${retries}). Retrying in ${wait / 1000}s…`);
+                      await sleep(wait);
+                      continue;
+                    }
+                    return { ok: false, status: statusCode, reason: `GitHub server error (${statusCode}) after ${retries} attempts` };
+                  }
+
+                  return { ok: false, status: statusCode, reason: `Unexpected HTTP status ${statusCode}` };
+
+                } catch (networkErr) {
                   if (attempt < retries) {
-                    const wait = attempt * 3000;
-                    console.warn(`  ⚠ HTTP ${statusCode} (attempt ${attempt}/${retries}). Retrying in ${wait / 1000}s…`);
+                    const wait = attempt * 2000;
+                    console.warn(`  ⚠ Network error (attempt ${attempt}/${retries}): ${networkErr.message}. Retrying in ${wait / 1000}s…`);
                     await sleep(wait);
-                    continue;
+                  } else {
+                    return { ok: false, status: 0, reason: `Network error after ${retries} attempts: ${networkErr.message}` };
                   }
-                  return { ok: false, status: statusCode, reason: `GitHub server error (${statusCode}) after ${retries} attempts` };
-                }
-
-                return { ok: false, status: statusCode, reason: `Unexpected HTTP status ${statusCode}` };
-
-              } catch (networkErr) {
-                if (attempt < retries) {
-                  const wait = attempt * 2000;
-                  console.warn(`  ⚠ Network error (attempt ${attempt}/${retries}): ${networkErr.message}. Retrying in ${wait / 1000}s…`);
-                  await sleep(wait);
-                } else {
-                  return { ok: false, status: 0, reason: `Network error after ${retries} attempts: ${networkErr.message}` };
                 }
               }
+              // If we broke out of the retry loop due to a redirect, continue
+              // the redirect loop with the new currentUrl.
             }
+
+            // Should never reach here, but just in case
+            return { ok: false, status: 0, reason: 'Unexpected exit from fetch loop' };
           }
 
           // ── validate slug ──────────────────────────────────────────────
@@ -175,15 +197,11 @@ jobs:
           }
 
           // ── load previous data.json ────────────────────────────────────
-          //
-          // We build a map of slug → entry so we can:
-          //   1. Skip repos whose data is still fresh (fetched recently).
-          //   2. Fall back to stale-but-good data for repos that fail this run.
 
           const STALENESS_MS = (parseInt(process.env.STALENESS_HOURS || '20', 10)) * 60 * 60 * 1000;
 
-          let previousMeta = null;   // top-level fields from last run
-          const existingMap = {};    // slug (lower-cased) → framework entry
+          let previousMeta = null;
+          const existingMap = {};
 
           try {
             const prev = JSON.parse(fs.readFileSync('data.json', 'utf8'));
@@ -239,14 +257,10 @@ jobs:
           }
 
           // ── decide which repos need fetching ───────────────────────────
-          //
-          // A repo is "fresh" if it has a lastFetchedAt timestamp that is
-          // within STALENESS_MS.  Fresh repos are carried forward as-is;
-          // only stale / never-seen repos are hit against the API.
 
           const now      = Date.now();
           const toFetch  = [];
-          const carried  = [];  // fresh entries kept from previous run
+          const carried  = [];
 
           for (const entry of unique) {
             const existing = existingMap[entry.slug.toLowerCase()];
@@ -275,15 +289,11 @@ jobs:
           }
 
           // ── fetch ──────────────────────────────────────────────────────
-          //
-          // On rate-limit we stop immediately rather than failing loudly.
-          // Repos not yet reached are carried forward from existing data
-          // (or omitted if they have no previous data at all).
-          // The next manual / scheduled run will pick them up because they
-          // will still be stale.
 
           const freshlyFetched = [];
           const failures       = [...invalidEntries];
+          // Track redirected slugs so we can surface them in the summary
+          const redirectedSlugs = [];
           let   rateLimitedAt  = null;
 
           for (const { slug, manualTags } of toFetch) {
@@ -291,7 +301,6 @@ jobs:
             if (rateLimitedAt !== null) {
               const existing = existingMap[slug.toLowerCase()];
               if (existing) {
-                // Keep the stale entry — it will be re-fetched next run
                 freshlyFetched.push(existing);
                 failures.push({
                   slug,
@@ -330,7 +339,6 @@ jobs:
             // ── other error ──────────────────────────────────────────────
             if (!repoRes.ok) {
               console.log(`✗ ${repoRes.reason}`);
-              // Fall back to previous data rather than dropping the repo entirely
               const existing = existingMap[slug.toLowerCase()];
               if (existing) {
                 console.log(`    ↩ Keeping previous data for ${slug} (last fetched ${existing.lastFetchedAt ?? 'unknown'})`);
@@ -339,6 +347,16 @@ jobs:
               failures.push({ slug, reason: repoRes.reason, status: repoRes.status });
               await sleep(300);
               continue;
+            }
+
+            // ── detect if the slug was redirected ────────────────────────
+            // resolvedUrl is like https://api.github.com/repos/new-owner/new-name
+            const resolvedSlug = repoRes.resolvedUrl
+              ? repoRes.resolvedUrl.replace('https://api.github.com/repos/', '')
+              : null;
+            if (resolvedSlug && resolvedSlug.toLowerCase() !== slug.toLowerCase()) {
+              redirectedSlugs.push({ old: slug, new: resolvedSlug });
+              console.warn(`\n  ⚠ repos.txt needs updating: ${slug} → ${resolvedSlug}`);
             }
 
             // ── topics (non-fatal) ───────────────────────────────────────
@@ -376,17 +394,13 @@ jobs:
               pushedAt:       d.pushed_at,
               archived:       d.archived      || false,
               homepage:       d.homepage      || '',
-              lastFetchedAt:  new Date().toISOString()   // ← resume checkpoint
+              lastFetchedAt:  new Date().toISOString()
             });
 
             await sleep(250);
           }
 
           // ── merge results ──────────────────────────────────────────────
-          //
-          // Final list = carried-forward fresh entries + everything from
-          // this run (fetched or fallen-back-to-stale).
-          // We deduplicate by fullName to avoid any double-entries.
 
           const allResults   = [...carried, ...freshlyFetched];
           const seenFullName = new Set();
@@ -399,7 +413,6 @@ jobs:
 
           // ── summary ────────────────────────────────────────────────────
 
-          const fetchedCount  = freshlyFetched.filter(fw => fw.lastFetchedAt && new Date(fw.lastFetchedAt).getTime() > now).length;
           const hardFailures  = failures.filter(f => f.status !== 'invalid-format' && f.status !== 'skipped-rate-limit');
 
           console.log('\n── Fetch Summary ──────────────────────────────────────────');
@@ -412,6 +425,11 @@ jobs:
           }
           if (hardFailures.length > 0) {
             hardFailures.forEach(f => console.log(`      • ${f.slug}  →  ${f.reason}`));
+          }
+          // ── print repos.txt update hints for any redirected slugs ──────
+          if (redirectedSlugs.length > 0) {
+            console.log(`\n  ↪ repos.txt slug(s) that should be updated (${redirectedSlugs.length}):`);
+            redirectedSlugs.forEach(r => console.log(`      • ${r.old}  →  ${r.new}`));
           }
           console.log(`  ━ Total in output : ${results.length}`);
 
@@ -436,13 +454,14 @@ jobs:
           const output = {
             fetchedAt:  new Date().toISOString(),
             count:      results.length,
-            // Flag lets the UI / consumers know this run did not cover all repos
             ...(isPartial && {
               partial:       true,
               partialReason: `Rate limited at ${rateLimitedAt} — remaining repos deferred to next run`
             }),
             frameworks:  results,
-            ...(failures.length > 0 && { fetchErrors: failures })
+            ...(failures.length > 0 && { fetchErrors: failures }),
+            // Surface redirect hints in data.json so tooling can pick them up
+            ...(redirectedSlugs.length > 0 && { slugRedirects: redirectedSlugs })
           };
 
           fs.writeFileSync('data.json', JSON.stringify(output, null, 2));
@@ -456,7 +475,7 @@ jobs:
 
           if (isPartial) {
             console.log('\n⚠ Run ended early due to rate limiting. Re-run manually or wait for the next schedule to fetch the remaining repos.');
-            process.exit(0);   // graceful — data is intact
+            process.exit(0);
           }
 
           if (hardFailures.length > 0) {
