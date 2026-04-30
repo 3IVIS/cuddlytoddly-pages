@@ -9,7 +9,10 @@
   <meta name="keywords" content="AI agent framework, LLM task planning, Python AI orchestration, DAG task graph, LLM agent, Claude API, OpenAI agent, llama.cpp, open source AI, agentic AI, AI planning execution, task decomposition">
   <meta name="author" content="3IVIS">
   <meta name="robots" content="index, follow">
+  <meta name="application-name" content="cuddlytoddly">
+  <meta name="generator" content="cuddlytoddly">
   <link rel="canonical" href="https://cuddlytoddly.com/">
+  <link rel="sitemap" type="application/xml" href="https://cuddlytoddly.com/sitemap.xml">
   <meta name="theme-color" content="#18171a">
 
   <meta property="og:type" content="website">
@@ -19,6 +22,8 @@
   <meta property="og:image" content="https://cuddlytoddly.com/assets/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="cuddlytoddly — plan-first AI agent framework for Python">
+  <meta property="og:locale" content="en_US">
   <meta property="og:site_name" content="cuddlytoddly">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -28,52 +33,150 @@
   <meta name="twitter:image" content="https://cuddlytoddly.com/assets/og-image.png">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "cuddlytoddly",
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "Linux, macOS, Windows",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-    "url": "https://cuddlytoddly.com/",
-    "downloadUrl": "https://pypi.org/project/cuddlytoddly/",
-    "codeRepository": "https://github.com/3IVIS/cuddlytoddly",
-    "license": "https://opensource.org/licenses/MIT",
-    "description": "cuddlytoddly is an open-source Python AI agent framework that builds an explicit, editable task graph before executing anything. Supports Claude, OpenAI, and local llama.cpp backends.",
-    "author": { "@type": "Organization", "name": "3IVIS", "url": "https://github.com/3IVIS" },
-    "programmingLanguage": "Python",
-    "softwareRequirements": "Python 3.11+",
-    "keywords": "AI agent, LLM planning, task graph, DAG, orchestration, Claude, OpenAI, llama.cpp"
-  }
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "cuddlytoddly",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Linux, macOS, Windows",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "url": "https://cuddlytoddly.com/",
+      "downloadUrl": "https://pypi.org/project/cuddlytoddly/",
+      "codeRepository": "https://github.com/3IVIS/cuddlytoddly",
+      "license": "https://opensource.org/licenses/MIT",
+      "description": "cuddlytoddly is an open-source Python AI agent framework that builds an explicit, editable task graph before executing anything. Supports Claude, OpenAI, and local llama.cpp backends.",
+      "author": { "@type": "Organization", "name": "3IVIS", "url": "https://github.com/3IVIS" },
+      "programmingLanguage": "Python",
+      "softwareRequirements": "Python 3.11+",
+      "keywords": "AI agent, LLM planning, task graph, DAG, orchestration, Claude, OpenAI, llama.cpp"
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "cuddlytoddly",
+      "url": "https://cuddlytoddly.com/",
+      "description": "Open-source Python AI agent framework with explicit plan-first execution, live task graph editing, and support for Claude, OpenAI, and local llama.cpp models.",
+      "publisher": { "@type": "Organization", "name": "3IVIS", "url": "https://github.com/3IVIS" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": { "@type": "EntryPoint", "urlTemplate": "https://github.com/search?q=cuddlytoddly+{search_term_string}&type=code" },
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to install and run cuddlytoddly",
+      "description": "Install the cuddlytoddly AI agent framework, set your API key, and run your first goal in three steps.",
+      "totalTime": "PT3M",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Install with your chosen backend",
+          "text": "Run: pip install cuddlytoddly[claude] for Anthropic Claude, pip install cuddlytoddly[openai] for OpenAI, or pip install cuddlytoddly[local] for a local llama.cpp model.",
+          "url": "https://cuddlytoddly.com/#quickstart"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Set your API key",
+          "text": "Export your API key: export ANTHROPIC_API_KEY=sk-ant-... or export OPENAI_API_KEY=... The active backend is auto-detected from which key is present.",
+          "url": "https://cuddlytoddly.com/#quickstart"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Run a goal",
+          "text": "Run: cuddlytoddly \"Write a market analysis for electric scooters\". The web UI opens automatically showing the full task plan. Inspect or edit it before execution starts, or just let it run.",
+          "url": "https://cuddlytoddly.com/#quickstart"
+        }
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is cuddlytoddly?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "cuddlytoddly is an open-source Python AI agent framework that builds an explicit, editable task graph (DAG) before executing anything. It lets you inspect, edit, and redirect the plan at any point during execution. It supports Claude, OpenAI, and local llama.cpp models."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How is cuddlytoddly different from other AI agent frameworks?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Most LLM agents jump straight into action. cuddlytoddly builds a complete task plan as a DAG before executing anything, so you always know what it intends to do and can change that intent before, during, or after execution. It also features automatic quality-checking, crash-proof JSONL event logging, and task-to-subgoal expansion."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which LLM backends does cuddlytoddly support?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "cuddlytoddly supports Anthropic Claude (via pip install cuddlytoddly[claude]), OpenAI (via pip install cuddlytoddly[openai]), any OpenAI-compatible API, and fully local models via llama.cpp (via pip install cuddlytoddly[local]). Switch backends by editing one line in config.toml."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I run cuddlytoddly entirely offline?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Install with pip install cuddlytoddly[local] and cuddlytoddly will run Llama 3.3 70B Instruct Q4_K_M via llama.cpp on Apple Silicon, NVIDIA GPU, or CPU — no API key or internet connection required."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens if cuddlytoddly crashes mid-run?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Every graph mutation is appended to a JSONL event log. Restart after a crash and the system picks up exactly where it left off — completed tasks stay done, only interrupted ones re-run."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I edit the task plan while it is running?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The plan is live and mutable throughout execution. You can pause the LLM, edit a task's description or dependencies, promote a task into a subgoal for a finer breakdown, or switch to a different goal entirely. Only affected branches re-run — work already completed is preserved."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is cuddlytoddly free and open source?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. cuddlytoddly is MIT licensed and hosted on GitHub at https://github.com/3IVIS/cuddlytoddly. It is free to use, modify, and distribute."
+          }
+        }
+      ]
+    }
+  ]
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
   <style>
-/* =========================================================
-   cuddlytoddly — warm-technical editorial
-   deep charcoal · warm amber · slate blue
-   
-   Palette revision — contrast audit fixes:
-     --muted  #7a7570 → #a09a94  (3.9→6.4:1 on bg)  ✅ AA
-     --dim    #45403c → #807a74  (1.7→4.2:1 on bg)  ✅ AA
-     --border rgba(255,255,255,0.07) → 0.10           ↑ card legibility
-   ========================================================= */
 :root {
   --bg:          #18171a;
   --bg-alt:      #1c1b1f;
   --bg-card:     #222026;
   --bg-code:     #111013;
-  --border:      rgba(255,255,255,0.10);   /* was 0.07 */
+  --border:      rgba(255,255,255,0.10);
   --bwarm:       rgba(201,169,110,0.28);
   --amber:       #c9a96e;
   --amber-dim:   rgba(201,169,110,0.11);
   --blue:        #82b4c8;
   --green:       #7dba8c;
   --text:        #e8e2d9;
-  --muted:       #a09a94;   /* was #7a7570 — lifted to 6.4:1 on --bg */
-  --dim:         #807a74;   /* was #45403c — lifted to 4.2:1 on --bg  */
+  --muted:       #a09a94;
+  --dim:         #807a74;
   --serif:       'Lora', Georgia, serif;
   --mono:        'DM Mono', 'Fira Code', monospace;
   --sans:        'DM Sans', system-ui, sans-serif;
@@ -121,6 +224,7 @@ nav {
 .nav-links { display: flex; gap: 1.5rem; align-items: center; }
 .nav-links a { color: var(--muted); font-size: .84rem; transition: color .18s; }
 .nav-links a:hover { color: var(--text); opacity: 1; }
+.nav-divider { width: 1px; height: 16px; background: var(--border); }
 .nav-gh {
   display: flex; align-items: center; gap: .4rem;
   color: var(--amber) !important; font-weight: 500 !important;
@@ -291,83 +395,37 @@ section:nth-child(odd) { background: var(--bg-alt); }
 .cx { color: var(--green); } .cm { color: var(--dim); }
 
 /* ── DEMO RUNS ── */
-.demo-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
+.demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 .demo-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  overflow: hidden;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r); overflow: hidden;
   transition: border-color .22s, transform .2s;
 }
 .demo-card:hover { border-color: var(--bwarm); transform: translateY(-3px); }
-.demo-screens {
-  position: relative;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-code);
-}
-.demo-screen-wrap {
-  height: 210px;
-  overflow: hidden;
-  position: relative;
-}
+.demo-screens { position: relative; border-bottom: 1px solid var(--border); background: var(--bg-code); }
+.demo-screen-wrap { height: 210px; overflow: hidden; position: relative; }
 .demo-screen-wrap img {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover; object-position: top left;
-  display: block;
-  opacity: 0;
-  transition: opacity .9s ease, transform .9s ease;
-  transform: scale(1.02);
-  filter: brightness(.92);
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: top left; display: block;
+  opacity: 0; transition: opacity .9s ease, transform .9s ease;
+  transform: scale(1.02); filter: brightness(.92);
 }
-.demo-screen-wrap img.ds-active {
-  opacity: 1;
-  transform: scale(1);
-  filter: brightness(.92);
-}
-.demo-card:hover .demo-screen-wrap img.ds-active {
-  filter: brightness(1);
-}
+.demo-screen-wrap img.ds-active { opacity: 1; transform: scale(1); filter: brightness(.92); }
+.demo-card:hover .demo-screen-wrap img.ds-active { filter: brightness(1); }
 .demo-screen-label {
   position: absolute; bottom: 0; left: 0; right: 0;
   padding: .35rem .75rem;
   background: linear-gradient(transparent, rgba(17,16,19,.92));
-  font-family: var(--mono); font-size: .64rem;
-  color: var(--dim); letter-spacing: .08em;
-  pointer-events: none;
-  z-index: 2;
-  transition: opacity .4s ease;
+  font-family: var(--mono); font-size: .64rem; color: var(--dim);
+  letter-spacing: .08em; pointer-events: none; z-index: 2;
 }
-.demo-screen-dots {
-  position: absolute; top: .6rem; right: .75rem;
-  display: flex; gap: 5px; z-index: 2;
-}
-.demo-screen-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: rgba(255,255,255,.18);
-  transition: background .35s ease;
-}
+.demo-screen-dots { position: absolute; top: .6rem; right: .75rem; display: flex; gap: 5px; z-index: 2; }
+.demo-screen-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,.18); transition: background .35s ease; }
 .demo-screen-dot.ds-dot-active { background: var(--amber); }
 .demo-body { padding: 1.2rem 1.4rem 1.4rem; }
-.demo-goal-label {
-  font-family: var(--mono); font-size: .64rem;
-  color: var(--amber); letter-spacing: .1em;
-  text-transform: uppercase; opacity: .6;
-  margin-bottom: .4rem;
-}
-.demo-title {
-  font-family: var(--serif); font-size: 1.05rem;
-  color: var(--text); font-weight: 600;
-  line-height: 1.35; margin-bottom: 1rem;
-}
-.demo-desc {
-  font-size: .82rem; color: var(--muted);
-  line-height: 1.6; margin-bottom: 1.1rem;
-}
+.demo-goal-label { font-family: var(--mono); font-size: .64rem; color: var(--amber); letter-spacing: .1em; text-transform: uppercase; opacity: .6; margin-bottom: .4rem; }
+.demo-title { font-family: var(--serif); font-size: 1.05rem; color: var(--text); font-weight: 600; line-height: 1.35; margin-bottom: 1rem; }
+.demo-desc { font-size: .82rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.1rem; }
 .demo-actions { display: flex; gap: .6rem; flex-wrap: wrap; }
 .demo-btn {
   display: inline-flex; align-items: center; gap: .35rem;
@@ -375,28 +433,14 @@ section:nth-child(odd) { background: var(--bg-alt); }
   padding: .38rem .9rem; border-radius: 5px;
   transition: background .15s, border-color .15s, color .15s;
 }
-.demo-btn-primary {
-  background: var(--amber-dim);
-  border: 1px solid var(--bwarm);
-  color: var(--amber);
-}
+.demo-btn-primary { background: var(--amber-dim); border: 1px solid var(--bwarm); color: var(--amber); }
 .demo-btn-primary:hover { background: rgba(201,169,110,.2); opacity: 1; }
-.demo-btn-secondary {
-  border: 1px solid var(--border);
-  color: var(--muted);
-}
+.demo-btn-secondary { border: 1px solid var(--border); color: var(--muted); }
 .demo-btn-secondary:hover { border-color: var(--bwarm); color: var(--text); opacity: 1; }
-.demo-intro {
-  font-size: .95rem; color: var(--muted);
-  margin-bottom: 2rem; line-height: 1.7;
-}
+.demo-intro { font-size: .95rem; color: var(--muted); margin-bottom: 2rem; line-height: 1.7; }
 
 /* ── FEATURES ── */
-.feat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 1.1rem;
-}
+.feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.1rem; }
 .feat-card {
   background: var(--bg-card); border: 1px solid var(--border);
   border-radius: var(--r); padding: 1.6rem;
@@ -452,13 +496,24 @@ section:nth-child(odd) { background: var(--bg-alt); }
 .doc-title { font-family: var(--serif); font-size: .95rem; color: var(--text); font-weight: 600; }
 .doc-desc { font-size: .8rem; color: var(--muted); line-height: 1.5; }
 
-/* ── FOOTER ── */
-footer { padding: 2.25rem 2rem; }
-.footer-inner {
-  max-width: var(--max); margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 1rem;
+/* ── OBSERVATORY CARDS ── */
+.obs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.obs-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 1.6rem;
+  display: flex; flex-direction: column; gap: .5rem;
+  transition: border-color .2s, transform .18s;
 }
+.obs-card:hover { border-color: var(--bwarm); transform: translateY(-2px); opacity: 1; }
+.obs-eyebrow { font-family: var(--mono); font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: var(--amber); opacity: .6; }
+.obs-title { font-family: var(--serif); font-size: 1.05rem; font-weight: 600; color: var(--text); line-height: 1.3; }
+.obs-desc { font-size: .82rem; color: var(--muted); line-height: 1.6; }
+.obs-link { font-family: var(--mono); font-size: .72rem; color: var(--amber); margin-top: .25rem; display: inline-flex; align-items: center; gap: .3rem; }
+
+/* ── FOOTER ── */
+footer { padding: 2.25rem 2rem; border-top: 1px solid var(--border); }
+.footer-inner { max-width: var(--max); margin: 0 auto; display: flex; flex-direction: column; gap: .75rem; }
+.footer-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 .footer-logo { font-family: var(--mono); font-size: .82rem; color: var(--amber); letter-spacing: .06em; opacity: .55; }
 .flinks { display: flex; gap: 1.5rem; }
 .flinks a { font-size: .8rem; color: var(--dim); transition: color .18s; }
@@ -485,6 +540,7 @@ footer { padding: 2.25rem 2rem; }
   .be { display: none; }
   .footer-inner { flex-direction: column; align-items: flex-start; }
   .demo-grid { grid-template-columns: 1fr; }
+  .obs-grid { grid-template-columns: 1fr; }
 }
   </style>
 </head>
@@ -507,6 +563,9 @@ footer { padding: 2.25rem 2rem; }
       <a href="#demo">Demo</a>
       <a href="#features">Features</a>
       <a href="#quickstart">Quick Start</a>
+      <div class="nav-divider"></div>
+      <a href="ai_agent_frameworks.html">Frameworks</a>
+      <a href="ai_agent_memory_frameworks.html">Memory</a>
       <a href="https://github.com/3IVIS/cuddlytoddly" class="nav-gh" target="_blank" rel="noopener" aria-label="View cuddlytoddly on GitHub">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
         GitHub
@@ -662,36 +721,21 @@ footer { padding: 2.25rem 2rem; }
       <p class="demo-intro">Every run produces a standalone interactive snapshot — the full task graph with node details, results, and a replay of the plan's evolution — and an optional terminal view for headless environments. The two examples below are complete, unedited runs.</p>
 
       <div class="demo-grid">
-
-        <!-- Demo 1: SaaS Business -->
         <article class="demo-card">
           <div class="demo-screens">
             <div class="demo-screen-wrap" data-slideshow>
-              <img
-                src="https://cuddlytoddly.com/runs/how_to_build_a_saas_business_webui.png"
-                alt="cuddlytoddly web UI showing a task DAG for 'How to build a SaaS business'"
-                loading="lazy" width="420" height="210"
-                class="ds-active" data-label="web ui"
-              >
-              <img
-                src="https://cuddlytoddly.com/runs/how_to_build_a_saas_business_terminal.png"
-                alt="cuddlytoddly terminal UI showing the same SaaS business plan executing step by step"
-                loading="lazy" width="420" height="210"
-                data-label="terminal"
-              >
+              <img src="https://cuddlytoddly.com/runs/how_to_build_a_saas_business_webui.png" alt="cuddlytoddly web UI showing a task DAG for 'How to build a SaaS business'" loading="lazy" width="420" height="210" class="ds-active" data-label="web ui">
+              <img src="https://cuddlytoddly.com/runs/how_to_build_a_saas_business_terminal.png" alt="cuddlytoddly terminal UI showing the same SaaS business plan executing step by step" loading="lazy" width="420" height="210" data-label="terminal">
             </div>
             <span class="demo-screen-label">web ui</span>
-            <div class="demo-screen-dots" aria-hidden="true">
-              <span class="demo-screen-dot ds-dot-active"></span>
-              <span class="demo-screen-dot"></span>
-            </div>
+            <div class="demo-screen-dots" aria-hidden="true"><span class="demo-screen-dot ds-dot-active"></span><span class="demo-screen-dot"></span></div>
           </div>
           <div class="demo-body">
             <div class="demo-goal-label">Goal</div>
             <h3 class="demo-title">How to build a SaaS business</h3>
             <p class="demo-desc">Full plan decomposition covering market research, product strategy, go-to-market, pricing, and launch sequencing — executed with web research and structured outputs at each step.</p>
             <div class="demo-actions">
-              <a class="demo-btn demo-btn-primary" href="https://cuddlytoddly.com/runs/how_to_build_a_saas_business.html" target="_blank" rel="noopener" aria-label="View interactive DAG snapshot for SaaS business plan run">
+              <a class="demo-btn demo-btn-primary" href="https://cuddlytoddly.com/runs/how_to_build_a_saas_business.html" target="_blank" rel="noopener">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                 Interactive DAG snapshot
               </a>
@@ -699,42 +743,27 @@ footer { padding: 2.25rem 2rem; }
           </div>
         </article>
 
-        <!-- Demo 2: Negotiate a Raise -->
         <article class="demo-card">
           <div class="demo-screens">
             <div class="demo-screen-wrap" data-slideshow>
-              <img
-                src="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise_webui.png"
-                alt="cuddlytoddly web UI showing a task DAG for 'How to negotiate a raise'"
-                loading="lazy" width="420" height="210"
-                class="ds-active" data-label="web ui"
-              >
-              <img
-                src="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise_terminal.png"
-                alt="cuddlytoddly terminal UI showing the raise negotiation plan executing"
-                loading="lazy" width="420" height="210"
-                data-label="terminal"
-              >
+              <img src="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise_webui.png" alt="cuddlytoddly web UI showing a task DAG for 'How to negotiate a raise'" loading="lazy" width="420" height="210" class="ds-active" data-label="web ui">
+              <img src="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise_terminal.png" alt="cuddlytoddly terminal UI showing the raise negotiation plan executing" loading="lazy" width="420" height="210" data-label="terminal">
             </div>
             <span class="demo-screen-label">web ui</span>
-            <div class="demo-screen-dots" aria-hidden="true">
-              <span class="demo-screen-dot ds-dot-active"></span>
-              <span class="demo-screen-dot"></span>
-            </div>
+            <div class="demo-screen-dots" aria-hidden="true"><span class="demo-screen-dot ds-dot-active"></span><span class="demo-screen-dot"></span></div>
           </div>
           <div class="demo-body">
             <div class="demo-goal-label">Goal</div>
             <h3 class="demo-title">How to negotiate a raise</h3>
             <p class="demo-desc">Research-backed plan covering market rate benchmarking, timing strategy, argument construction, and conversation scripts — grounded in publicly available salary data fetched at runtime.</p>
             <div class="demo-actions">
-              <a class="demo-btn demo-btn-primary" href="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise.html" target="_blank" rel="noopener" aria-label="View interactive DAG snapshot for raise negotiation plan run">
+              <a class="demo-btn demo-btn-primary" href="https://cuddlytoddly.com/runs/how_to_negotiate_a_raise.html" target="_blank" rel="noopener">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                 Interactive DAG snapshot
               </a>
             </div>
           </div>
         </article>
-
       </div>
 
       <p style="margin-top:1.5rem; font-size:.8rem; font-family:var(--mono); color:var(--dim);">
@@ -749,76 +778,19 @@ footer { padding: 2.25rem 2rem; }
       <div class="sec-label">Features</div>
       <h2 id="features-heading">Everything needed to plan<br>precisely and execute reliably</h2>
       <div class="feat-grid">
-
-        <div class="feat-card">
-          <div class="feat-icon" aria-hidden="true">⬡</div>
-          <h3>Explicit Plan Before Execution</h3>
-          <p>The full task graph — every step, dependency, and expected output — is built and visible before the first tool is called. No action without a declared intent.</p>
-        </div>
-        <div class="feat-card feat-new">
-          <div class="feat-badge">New</div>
-          <div class="feat-icon" aria-hidden="true">◉</div>
-          <h3>Grounded Clarification</h3>
-          <p>Before planning, the system extracts every concrete fact already in your goal — budget, constraints, size, location — and pre-fills them as known fields. Only genuinely missing information is surfaced for input. Tool-fetchable facts are never asked of you.</p>
-        </div>
-        <div class="feat-card feat-new">
-          <div class="feat-badge">New</div>
-          <div class="feat-icon" aria-hidden="true">✦</div>
-          <h3>Plan Scrutiny Pass</h3>
-          <p>An optional second LLM call reviews each draft plan for goal coverage, task realism, output completeness, and missing implicit steps before anything reaches the graph.</p>
-        </div>
-        <div class="feat-card feat-new">
-          <div class="feat-badge">New</div>
-          <div class="feat-icon" aria-hidden="true">◈</div>
-          <h3>Constraint Enforcement</h3>
-          <p>A deterministic pass after validation catches cycles, removes duplicate edges, strips orphaned inputs, and resolves ghost nodes — before any node executes.</p>
-        </div>
-        <div class="feat-card feat-new">
-          <div class="feat-badge">New</div>
-          <div class="feat-icon" aria-hidden="true">⊙</div>
-          <h3>Task → Subgoal Expansion</h3>
-          <p>Any task can be promoted to a subgoal at any time for a finer-grained breakdown. The planner decomposes it into a sub-DAG without touching the rest of the plan.</p>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon" aria-hidden="true">✎</div>
-          <h3>Live Plan Editing</h3>
-          <p>Edit task descriptions, add or remove dependencies, and restructure the graph while execution is running. Only affected branches re-run — completed work is always preserved.</p>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon" aria-hidden="true">⏸</div>
-          <h3>Pause &amp; Redirect</h3>
-          <p>Pause the LLM at any point, inspect progress, make changes, then resume — or switch to a different goal entirely. The system stops cleanly and picks up from the updated state.</p>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon" aria-hidden="true">◻</div>
-          <h3>Real Tool Execution</h3>
-          <p>Tasks execute with real tools: code execution, file I/O, web access. Add custom skills by dropping a <code>SKILL.md</code> folder into the skills directory — no code changes required.</p>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon" aria-hidden="true">⊕</div>
-          <h3>Automatic Gap Bridging</h3>
-          <p>The QualityGate checks each result against declared outputs. Missing pieces automatically inject a bridging task so the plan stays coherent without manual intervention.</p>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon" aria-hidden="true">↺</div>
-          <h3>Crash &amp; Resume</h3>
-          <p>Every mutation is logged to JSONL. Restart after a crash and completed tasks stay done — only interrupted work re-runs. Token history is restored so the UI always shows the correct cumulative count.</p>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon" aria-hidden="true">◻</div>
-          <h3>Multi-Backend Support</h3>
-          <p>Swap between Claude, OpenAI, any compatible API, or a fully local llama.cpp model with one config line. Backend auto-detected from your environment on first run.</p>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon" aria-hidden="true">▣</div>
-          <h3>Terminal &amp; Web UI</h3>
-          <p>A live curses terminal for headless use and a web UI that shows the full task graph in real time, lets you edit nodes directly, supports mid-session goal switching, and exports standalone interactive HTML snapshots.</p>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon" aria-hidden="true">◬</div>
-          <h3>Local Model Support</h3>
-          <p>Run entirely offline with llama.cpp on Apple Silicon, NVIDIA, or CPU. Full privacy, no API costs, no data leaving your machine.</p>
-        </div>
+        <div class="feat-card"><div class="feat-icon" aria-hidden="true">⬡</div><h3>Explicit Plan Before Execution</h3><p>The full task graph — every step, dependency, and expected output — is built and visible before the first tool is called. No action without a declared intent.</p></div>
+        <div class="feat-card feat-new"><div class="feat-badge">New</div><div class="feat-icon" aria-hidden="true">◉</div><h3>Grounded Clarification</h3><p>Before planning, the system extracts every concrete fact already in your goal — budget, constraints, size, location — and pre-fills them as known fields. Only genuinely missing information is surfaced for input.</p></div>
+        <div class="feat-card feat-new"><div class="feat-badge">New</div><div class="feat-icon" aria-hidden="true">✦</div><h3>Plan Scrutiny Pass</h3><p>An optional second LLM call reviews each draft plan for goal coverage, task realism, output completeness, and missing implicit steps before anything reaches the graph.</p></div>
+        <div class="feat-card feat-new"><div class="feat-badge">New</div><div class="feat-icon" aria-hidden="true">◈</div><h3>Constraint Enforcement</h3><p>A deterministic pass after validation catches cycles, removes duplicate edges, strips orphaned inputs, and resolves ghost nodes — before any node executes.</p></div>
+        <div class="feat-card feat-new"><div class="feat-badge">New</div><div class="feat-icon" aria-hidden="true">⊙</div><h3>Task → Subgoal Expansion</h3><p>Any task can be promoted to a subgoal at any time for a finer-grained breakdown. The planner decomposes it into a sub-DAG without touching the rest of the plan.</p></div>
+        <div class="feat-card"><div class="feat-icon" aria-hidden="true">✎</div><h3>Live Plan Editing</h3><p>Edit task descriptions, add or remove dependencies, and restructure the graph while execution is running. Only affected branches re-run — completed work is always preserved.</p></div>
+        <div class="feat-card"><div class="feat-icon" aria-hidden="true">⏸</div><h3>Pause &amp; Redirect</h3><p>Pause the LLM at any point, inspect progress, make changes, then resume — or switch to a different goal entirely.</p></div>
+        <div class="feat-card"><div class="feat-icon" aria-hidden="true">◻</div><h3>Real Tool Execution</h3><p>Tasks execute with real tools: code execution, file I/O, web access. Add custom skills by dropping a <code>SKILL.md</code> folder into the skills directory.</p></div>
+        <div class="feat-card"><div class="feat-icon" aria-hidden="true">⊕</div><h3>Automatic Gap Bridging</h3><p>The QualityGate checks each result against declared outputs. Missing pieces automatically inject a bridging task so the plan stays coherent.</p></div>
+        <div class="feat-card"><div class="feat-icon" aria-hidden="true">↺</div><h3>Crash &amp; Resume</h3><p>Every mutation is logged to JSONL. Restart after a crash and completed tasks stay done — only interrupted work re-runs.</p></div>
+        <div class="feat-card"><div class="feat-icon" aria-hidden="true">◻</div><h3>Multi-Backend Support</h3><p>Swap between Claude, OpenAI, any compatible API, or a fully local llama.cpp model with one config line.</p></div>
+        <div class="feat-card"><div class="feat-icon" aria-hidden="true">▣</div><h3>Terminal &amp; Web UI</h3><p>A live curses terminal for headless use and a web UI that shows the full task graph in real time, lets you edit nodes directly, and exports standalone interactive HTML snapshots.</p></div>
+        <div class="feat-card"><div class="feat-icon" aria-hidden="true">◬</div><h3>Local Model Support</h3><p>Run entirely offline with llama.cpp on Apple Silicon, NVIDIA, or CPU. Full privacy, no API costs.</p></div>
       </div>
     </div>
   </section>
@@ -831,29 +803,13 @@ footer { padding: 2.25rem 2rem; }
       <p style="margin-bottom:1.75rem">The planning and execution layers are fully model-agnostic. Switch backends by editing <code>[llm] backend</code> in <code>config.toml</code> — every prompt, schema, and tool call works identically across all backends.</p>
       <div class="btable" role="table" aria-label="Supported LLM backends">
         <div class="brow bhdr" role="row"><span role="columnheader">Backend</span><span role="columnheader">Install</span><span role="columnheader">Env var</span></div>
-        <div class="brow" role="row">
-          <span class="bn" role="cell">claude</span>
-          <span class="bc" role="cell">pip install cuddlytoddly[claude]</span>
-          <span class="be" role="cell">ANTHROPIC_API_KEY</span>
-        </div>
-        <div class="brow" role="row">
-          <span class="bn" role="cell">openai</span>
-          <span class="bc" role="cell">pip install cuddlytoddly[openai]</span>
-          <span class="be" role="cell">OPENAI_API_KEY</span>
-        </div>
-        <div class="brow" role="row">
-          <span class="bn" role="cell">llamacpp</span>
-          <span class="bc" role="cell">pip install cuddlytoddly[local]</span>
-          <span class="be" role="cell">— (offline)</span>
-        </div>
-        <div class="brow" role="row">
-          <span class="bn" role="cell">any OpenAI-compat</span>
-          <span class="bc" role="cell">set base_url in config.toml</span>
-          <span class="be" role="cell">provider key</span>
-        </div>
+        <div class="brow" role="row"><span class="bn" role="cell">claude</span><span class="bc" role="cell">pip install cuddlytoddly[claude]</span><span class="be" role="cell">ANTHROPIC_API_KEY</span></div>
+        <div class="brow" role="row"><span class="bn" role="cell">openai</span><span class="bc" role="cell">pip install cuddlytoddly[openai]</span><span class="be" role="cell">OPENAI_API_KEY</span></div>
+        <div class="brow" role="row"><span class="bn" role="cell">llamacpp</span><span class="bc" role="cell">pip install cuddlytoddly[local]</span><span class="be" role="cell">— (offline)</span></div>
+        <div class="brow" role="row"><span class="bn" role="cell">any OpenAI-compat</span><span class="bc" role="cell">set base_url in config.toml</span><span class="be" role="cell">provider key</span></div>
       </div>
       <div class="backend-note">
-        The pip extra installs the required packages. The active backend is written to <code>config.toml</code> on first run and auto-detected from your environment: <code>ANTHROPIC_API_KEY</code> set → <code>claude</code>, <code>OPENAI_API_KEY</code> set → <code>openai</code>, neither → <code>llamacpp</code>. Edit <code>[llm] backend</code> in <code>config.toml</code> to change it at any time.<br><br>
+        The pip extra installs the required packages. The active backend is written to <code>config.toml</code> on first run and auto-detected from your environment: <code>ANTHROPIC_API_KEY</code> set → <code>claude</code>, <code>OPENAI_API_KEY</code> set → <code>openai</code>, neither → <code>llamacpp</code>.<br><br>
         Local default: Llama 3.3 70B Instruct Q4_K_M — auto-detected from llama.cpp or Hugging Face cache.
       </div>
     </div>
@@ -890,11 +846,7 @@ footer { padding: 2.25rem 2rem; }
             <pre><code>cuddlytoddly <span class="cs">"Write a market analysis for electric scooters"</span>
 
 <span class="cm"># The web UI opens automatically showing the full task plan.
-# Inspect or edit it before execution starts, or just let it run.
-# Pause, redirect, or promote any task to a subgoal at any time.
-# All state is persisted — resume exactly where you left off after a crash.
-
-# Print your config path to tune backends, scrutinize_plan, budgets, and more:</span>
+# Inspect or edit it before execution starts, or just let it run.</span>
 <span class="ck">python</span> -c <span class="cs">"from cuddlytoddly.config import CONFIG_PATH; print(CONFIG_PATH)"</span></code></pre>
           </div>
         </div>
@@ -919,7 +871,6 @@ footer { padding: 2.25rem 2rem; }
 <span class="ck">from</span> cuddlytoddly.core.task_graph         <span class="ck">import</span> TaskGraph
 <span class="ck">from</span> cuddlytoddly.skills.skill_loader     <span class="ck">import</span> SkillLoader
 
-<span class="cm"># Swap "claude" → "openai" or "llamacpp" — everything else stays identical</span>
 <span class="cx">llm</span>    = create_llm_client(<span class="cs">"claude"</span>, model=<span class="cs">"claude-opus-4-6"</span>)
 <span class="cx">graph</span>  = TaskGraph()
 <span class="cx">skills</span> = SkillLoader()
@@ -929,18 +880,12 @@ footer { padding: 2.25rem 2rem; }
     planner=LLMPlanner(
         llm_client=<span class="cx">llm</span>, graph=<span class="cx">graph</span>,
         skills_summary=<span class="cx">skills</span>.prompt_summary,
-        scrutinize_plan=<span class="cb2">True</span>,  <span class="cm"># LLM self-reviews each draft plan before execution</span>
+        scrutinize_plan=<span class="cb2">True</span>,
     ),
     executor=LLMExecutor(llm_client=<span class="cx">llm</span>, tool_registry=<span class="cx">skills</span>.registry),
     quality_gate=QualityGate(llm_client=<span class="cx">llm</span>, tool_registry=<span class="cx">skills</span>.registry),
 )
-<span class="cx">orchestrator</span>.start()  <span class="cm"># graph is live and editable at any point</span>
-
-<span class="cm"># Pause execution at any time:</span>
-<span class="cx">orchestrator</span>.stop_llm_calls()
-
-<span class="cm"># Promote a task to a subgoal for a finer-grained breakdown:</span>
-<span class="cm"># set its node_type → "goal", expanded → False; planner picks it up next cycle</span></code></pre>
+<span class="cx">orchestrator</span>.start()</code></pre>
       </div>
     </div>
   </section>
@@ -951,23 +896,34 @@ footer { padding: 2.25rem 2rem; }
       <div class="sec-label">Documentation</div>
       <h2 id="docs-heading">Everything else<br>is in the docs</h2>
       <nav class="doc-grid" aria-label="Documentation links">
-        <a class="doc-card" href="https://github.com/3IVIS/cuddlytoddly/blob/main/docs/architecture.md" target="_blank" rel="noopener">
-          <span class="doc-title">Architecture</span>
-          <span class="doc-desc">Planning pipeline, execution flow, concurrency model, and full module map.</span>
-        </a>
-        <a class="doc-card" href="https://github.com/3IVIS/cuddlytoddly/blob/main/docs/configuration.md" target="_blank" rel="noopener">
-          <span class="doc-title">Configuration</span>
-          <span class="doc-desc">Full config.toml reference — backends, scrutinize_plan, character budgets, and tuning guide.</span>
-        </a>
-        <a class="doc-card" href="https://github.com/3IVIS/cuddlytoddly/blob/main/docs/skills.md" target="_blank" rel="noopener">
-          <span class="doc-title">Skills</span>
-          <span class="doc-desc">Built-in skills (code execution, file ops) and how to add your own with SKILL.md + tools.py.</span>
-        </a>
-        <a class="doc-card" href="https://github.com/3IVIS/cuddlytoddly/blob/main/docs/api.md" target="_blank" rel="noopener">
-          <span class="doc-title">API Reference</span>
-          <span class="doc-desc">Full public Python API — LLMPlanner, PlanConstraintChecker, all classes and signatures.</span>
-        </a>
+        <a class="doc-card" href="https://github.com/3IVIS/cuddlytoddly/blob/main/docs/architecture.md" target="_blank" rel="noopener"><span class="doc-title">Architecture</span><span class="doc-desc">Planning pipeline, execution flow, concurrency model, and full module map.</span></a>
+        <a class="doc-card" href="https://github.com/3IVIS/cuddlytoddly/blob/main/docs/configuration.md" target="_blank" rel="noopener"><span class="doc-title">Configuration</span><span class="doc-desc">Full config.toml reference — backends, scrutinize_plan, character budgets, and tuning guide.</span></a>
+        <a class="doc-card" href="https://github.com/3IVIS/cuddlytoddly/blob/main/docs/skills.md" target="_blank" rel="noopener"><span class="doc-title">Skills</span><span class="doc-desc">Built-in skills (code execution, file ops) and how to add your own with SKILL.md + tools.py.</span></a>
+        <a class="doc-card" href="https://github.com/3IVIS/cuddlytoddly/blob/main/docs/api.md" target="_blank" rel="noopener"><span class="doc-title">API Reference</span><span class="doc-desc">Full public Python API — LLMPlanner, PlanConstraintChecker, all classes and signatures.</span></a>
       </nav>
+    </div>
+  </section>
+
+  <!-- OBSERVATORIES -->
+  <section id="observatories" aria-labelledby="obs-heading">
+    <div class="inner">
+      <div class="sec-label">Open Source Observatories</div>
+      <h2 id="obs-heading">Explore the AI agent<br>ecosystem</h2>
+      <p style="margin-bottom:1.75rem">We maintain two free, searchable indexes of open-source AI agent tooling — updated daily from GitHub.</p>
+      <div class="obs-grid">
+        <a class="obs-card" href="ai_agent_frameworks.html">
+          <div class="obs-eyebrow">Observatory</div>
+          <div class="obs-title">AI Agent Frameworks</div>
+          <div class="obs-desc">Ranked, tagged, and searchable index of open-source agent frameworks. Stars, forks, language, license, and topics — refreshed daily.</div>
+          <div class="obs-link">Browse frameworks ↗</div>
+        </a>
+        <a class="obs-card" href="ai_agent_memory_frameworks.html">
+          <div class="obs-eyebrow">Observatory</div>
+          <div class="obs-title">AI Agent Memory Frameworks</div>
+          <div class="obs-desc">Classified by layer, memory class, and architecture. From production-ready personalization layers to research-stage causal graphs.</div>
+          <div class="obs-link">Browse memory frameworks ↗</div>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -976,13 +932,17 @@ footer { padding: 2.25rem 2rem; }
   <!-- FOOTER -->
   <footer>
     <div class="footer-inner">
-      <a href="/" class="footer-logo" aria-label="cuddlytoddly home">cuddlytoddly</a>
-      <nav class="flinks" aria-label="Footer links">
-        <a href="https://github.com/3IVIS/cuddlytoddly" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://github.com/3IVIS/cuddlytoddly/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
-        <a href="https://github.com/3IVIS/cuddlytoddly/issues" target="_blank" rel="noopener">Issues</a>
-      </nav>
-      <span class="fcopy">Maintained by <a href="https://github.com/3IVIS" target="_blank" rel="noopener">3IVIS</a></span>
+      <div class="footer-row">
+        <a href="/" class="footer-logo" aria-label="cuddlytoddly home">cuddlytoddly</a>
+        <nav class="flinks" aria-label="Footer links">
+          <a href="https://github.com/3IVIS/cuddlytoddly" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/3IVIS/cuddlytoddly/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+          <a href="https://github.com/3IVIS/cuddlytoddly/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="ai_agent_frameworks.html">Frameworks</a>
+          <a href="ai_agent_memory_frameworks.html">Memory</a>
+        </nav>
+        <span class="fcopy">Maintained by <a href="https://github.com/3IVIS" target="_blank" rel="noopener">3IVIS</a></span>
+      </div>
     </div>
   </footer>
 
