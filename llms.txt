@@ -1,0 +1,125 @@
+# cuddlytoddly — llms.txt
+# This file follows the llmstxt.org convention for AI-readable site summaries.
+# It gives language models a concise, structured overview of this site and its content.
+
+> cuddlytoddly is an open-source Python AI agent framework that builds an explicit,
+> editable task graph (DAG) before executing anything. Plan first, execute second —
+> with you in control throughout. MIT licensed, Python 3.11+.
+
+## What is cuddlytoddly?
+
+cuddlytoddly is a plan-first AI agent framework. Unlike most LLM agents that jump
+straight into action, cuddlytoddly builds a complete task graph before a single tool
+is called. Every step, dependency, and expected output is visible and editable before
+and during execution.
+
+Key differentiators:
+- Explicit plan (DAG) built and shown to the user before any execution begins
+- Live plan editing: edit task descriptions, add/remove dependencies while running
+- Grounded clarification: extracts known facts from the goal before asking the user anything
+- Plan scrutiny pass: an optional second LLM call reviews the draft plan for gaps
+- Constraint enforcement: deterministic pass catches cycles, orphans, and ghost nodes
+- Task → Subgoal expansion: promote any task to a finer sub-DAG at any time
+- QualityGate: auto-checks each result and injects bridging tasks for gaps
+- Crash-proof: full JSONL event log; resume exactly where execution stopped
+- Multi-backend: Claude, OpenAI, any OpenAI-compatible API, or local llama.cpp
+
+## Supported LLM backends
+
+| Backend         | Install command                        | Auth                  |
+|-----------------|----------------------------------------|-----------------------|
+| claude          | pip install cuddlytoddly[claude]       | ANTHROPIC_API_KEY     |
+| openai          | pip install cuddlytoddly[openai]       | OPENAI_API_KEY        |
+| llamacpp        | pip install cuddlytoddly[local]        | none (offline)        |
+| OpenAI-compat   | set base_url in config.toml            | provider key          |
+
+Switch backends by editing `[llm] backend` in config.toml — all prompts, schemas,
+and tool calls work identically across every backend.
+
+## Quick start (3 steps)
+
+```bash
+# 1. Install
+pip install cuddlytoddly[claude]
+
+# 2. Set API key
+export ANTHROPIC_API_KEY=sk-ant-...
+
+# 3. Run a goal
+cuddlytoddly "Write a market analysis for electric scooters"
+```
+
+The web UI opens automatically, showing the full task plan before anything runs.
+Inspect it, edit it, or just let it execute.
+
+## Python API
+
+cuddlytoddly is fully importable as a library:
+
+```python
+from cuddlytoddly.planning.llm_interface  import create_llm_client
+from cuddlytoddly.planning.llm_planner    import LLMPlanner
+from cuddlytoddly.planning.llm_executor   import LLMExecutor
+from cuddlytoddly.engine.quality_gate     import QualityGate
+from cuddlytoddly.engine.llm_orchestrator import Orchestrator
+from cuddlytoddly.core.task_graph         import TaskGraph
+from cuddlytoddly.skills.skill_loader     import SkillLoader
+
+llm    = create_llm_client("claude", model="claude-opus-4-6")
+graph  = TaskGraph()
+skills = SkillLoader()
+
+orchestrator = Orchestrator(
+    graph=graph,
+    planner=LLMPlanner(llm_client=llm, graph=graph,
+                       skills_summary=skills.prompt_summary,
+                       scrutinize_plan=True),
+    executor=LLMExecutor(llm_client=llm, tool_registry=skills.registry),
+    quality_gate=QualityGate(llm_client=llm, tool_registry=skills.registry),
+)
+orchestrator.start()
+```
+
+## How it works (step by step)
+
+1. **Goal seeding** — a plain-English goal becomes the root node; nothing runs yet.
+2. **Context extraction** — concrete facts (budget, constraints, locations) are pre-filled; only genuinely missing info is surfaced for optional input.
+3. **Plan built as a DAG** — planner decomposes the goal into tasks with declared dependencies and expected outputs.
+4. **Scrutiny pass (optional)** — a second LLM call reviews the draft plan for completeness and realism.
+5. **Constraint validation** — deterministic pass removes cycles, orphans, and ghost nodes.
+6. **Inspect & edit** — the full plan is shown before execution; you can modify anything.
+7. **Concurrent dispatch** — ready tasks (dependencies met) run in parallel up to the configured worker count.
+8. **LLM + tools execute** — each task runs as a multi-turn LLM loop with code execution, file I/O, web access, and custom skills.
+9. **QualityGate** — checks each result against declared outputs; injects bridging tasks for gaps.
+10. **Crash-proof logging** — every mutation appended to JSONL; restart resumes exactly where it stopped.
+
+## Open Source Observatories
+
+cuddlytoddly.com also hosts two free, searchable indexes of open-source AI tooling,
+updated daily from GitHub:
+
+- **AI Agent Frameworks** — https://cuddlytoddly.com/ai_agent_frameworks.html
+  Ranked, tagged index of open-source agent frameworks with stars, forks, language, license, and topics.
+
+- **AI Agent Memory Frameworks** — https://cuddlytoddly.com/ai_agent_memory_frameworks.html
+  Classified by memory layer, memory class, and architecture — from production personalization layers to research-stage causal graphs.
+
+## Key links
+
+- Homepage: https://cuddlytoddly.com/
+- GitHub: https://github.com/3IVIS/cuddlytoddly
+- PyPI: https://pypi.org/project/cuddlytoddly/
+- License: MIT — https://opensource.org/licenses/MIT
+- Architecture docs: https://github.com/3IVIS/cuddlytoddly/blob/main/docs/architecture.md
+- Configuration reference: https://github.com/3IVIS/cuddlytoddly/blob/main/docs/configuration.md
+- Skills guide: https://github.com/3IVIS/cuddlytoddly/blob/main/docs/skills.md
+- API reference: https://github.com/3IVIS/cuddlytoddly/blob/main/docs/api.md
+- Issues: https://github.com/3IVIS/cuddlytoddly/issues
+
+## Metadata
+
+- Maintainer: 3IVIS (https://github.com/3IVIS)
+- Language: Python
+- Minimum Python version: 3.11
+- License: MIT
+- Last updated: 2026-04-30
